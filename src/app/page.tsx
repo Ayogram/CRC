@@ -13,16 +13,16 @@ import { HeroSlider } from "@/components/ui/HeroSlider";
 
 // Use improved icons for features
 const features = [
-  { img: "/images/media__1776271813071.jpg", title: "Peaceful Environment", desc: "A serene atmosphere perfectly suited for retreats and relaxation." },
-  { img: "/images/crclux.jpg", title: "Luxury Rooms", desc: "Premium comfort designed for singles, couples, and groups." },
-  { img: "/images/events.jpg", title: "Event Halls", desc: "Spacious areas for meetings, spiritual gatherings, and celebrations." },
-  { img: "/images/secured.jpg", title: "Secure Environment", desc: "24/7 top-notch security for your complete peace of mind." },
+  { img: "https://res.cloudinary.com/didymerkz/image/upload/v1777322161/crc_production_assets/media__1776271813071.jpg", title: "Peaceful Environment", desc: "A serene atmosphere perfectly suited for retreats and relaxation." },
+  { img: "https://res.cloudinary.com/didymerkz/image/upload/v1777316930/crc_production_assets/crc4.jpg", title: "Luxury Rooms", desc: "Premium comfort designed for singles, couples, and groups." },
+  { img: "https://res.cloudinary.com/didymerkz/image/upload/v1777316922/crc_production_assets/crc1.jpg", title: "Event Halls", desc: "Spacious areas for meetings, spiritual gatherings, and celebrations." },
+  { img: "https://res.cloudinary.com/didymerkz/image/upload/v1777316926/crc_production_assets/crc2.jpg", title: "Secure Environment", desc: "24/7 top-notch security for your complete peace of mind." },
 ];
 
 const rooms = [
-  { name: "Goshen Ultra", price: "Premium", type: "video", url: "/images/goshen_ultra.mp4", desc: "Our highest tier suite with exclusive amenities." },
-  { name: "Bethel", price: "Executive", type: "video", url: "/images/Bethel.MOV", desc: "Spacious and elegant accommodation." },
-  { name: "Zion Signature", price: "Deluxe", type: "video", url: "/images/Zionssignature.mov", desc: "A signature experience with premium finishing." },
+  { name: "Goshen Ultra", price: "Premium", type: "video", url: "https://res.cloudinary.com/didymerkz/video/upload/v1777317041/crc_production_assets/goshen_ultra.mp4", desc: "Our highest tier suite with exclusive amenities." },
+  { name: "Bethel", price: "Executive", type: "video", url: "https://res.cloudinary.com/didymerkz/video/upload/v1777317599/crc_production_assets/Bethel.mov", desc: "Spacious and elegant accommodation." },
+  { name: "Zion Signature", price: "Deluxe", type: "video", url: "https://res.cloudinary.com/didymerkz/video/upload/v1777318481/crc_production_assets/Zionssignature.mov", desc: "A signature experience with premium finishing." },
 ];
 
 export default function Home() {
@@ -177,7 +177,7 @@ export default function Home() {
         {/* Parallax background effect with real image */}
         <div className="absolute inset-0 z-0">
            <img 
-             src="/images/media__1776271813071.jpg" 
+             src="https://res.cloudinary.com/didymerkz/image/upload/v1777322161/crc_production_assets/media__1776271813071.jpg" 
              alt="Luxury Stay" 
              className="w-full h-full object-cover opacity-40 fixed mix-blend-overlay"
              style={{ backgroundAttachment: 'fixed' }} // Simulated simple parallax
