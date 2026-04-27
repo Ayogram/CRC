@@ -278,7 +278,7 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                           <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Category</label>
                           <select 
                             name="category" 
-                            defaultValue={editingItem.category}
+                            defaultValue={editingItem.category || ""}
                             onChange={(e) => setEditingItem({...editingItem, category: e.target.value})}
                             className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-slate-800 font-bold appearance-none shadow-sm"
                           >
