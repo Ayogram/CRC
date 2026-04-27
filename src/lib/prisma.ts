@@ -5,7 +5,9 @@ let cachedPrisma: PrismaClient | null = null;
 export function getPrisma(): PrismaClient {
   if (!cachedPrisma) {
     try {
-      cachedPrisma = new PrismaClient();
+      cachedPrisma = new PrismaClient({
+        accelerateUrl: process.env.DATABASE_URL
+      });
     } catch (error) {
       console.warn("[Safe-Mock] Prisma failed to initialize:", error);
       const dbUnavailable = async () => {
