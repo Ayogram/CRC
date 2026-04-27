@@ -5,8 +5,9 @@ let cachedPrisma: PrismaClient | null = null;
 export function getPrisma(): PrismaClient {
   if (!cachedPrisma) {
     try {
+      const url = process.env.DATABASE_URL?.replace("postgres://", "prisma+postgres://");
       cachedPrisma = new PrismaClient({
-        accelerateUrl: process.env.DATABASE_URL
+        accelerateUrl: url
       });
     } catch (error) {
       console.warn("[Safe-Mock] Prisma failed to initialize:", error);
