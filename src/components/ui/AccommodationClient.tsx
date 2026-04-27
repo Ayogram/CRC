@@ -20,8 +20,8 @@ export function AccommodationClient({
   // This is a safety bridge for the migration
   const getRoomMedia = (roomName: string) => {
     const mapping: Record<string, string> = {
-      "Goshen Ultra": "/images/goshen_ultra.mp4",
-      "Bethel": "/images/Bethel.MOV",
+      "Goshen Ultra": "https://res.cloudinary.com/didymerkz/video/upload/v1777317041/crc_production_assets/goshen_ultra.mp4",
+      "Bethel": "https://res.cloudinary.com/didymerkz/video/upload/v1777317599/crc_production_assets/Bethel.mov",
       "Zion Signature": "/images/Zionssignature.mov",
       "Beulah": "/images/Beulah.MOV",
       "Rehoboth": "/images/Rehoboth .mov"
