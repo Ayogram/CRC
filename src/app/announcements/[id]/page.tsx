@@ -10,8 +10,12 @@ const prisma = getPrisma();
 export default async function AnnouncementDetail({ params }: { params: { id: string } }) {
   let announcement;
   try {
-    announcement = await prisma.announcement.findUnique({
-      where: { id: params.id, isDeleted: false, status: "PUBLISHED" }
+    announcement = await prisma.announcement.findFirst({
+      where: {
+        id: params.id,
+        isDeleted: false,
+        status: "PUBLISHED",
+      },
     });
   } catch (error) {
     // If DB connects fail

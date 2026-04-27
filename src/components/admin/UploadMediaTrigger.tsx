@@ -55,6 +55,19 @@ export function AdminUploadMediaTrigger({ onCreated }: { onCreated?: (item: Medi
     }
 
     const embedInfo = getEmbedUrl(previewUrl);
+    const blockedEmbedHosts = ["instagram", "tiktok", "facebook", "twitter"];
+    if (embedInfo?.type && blockedEmbedHosts.includes(embedInfo.type)) {
+      return (
+        <div className="w-full h-full flex flex-col items-center justify-center text-center px-4">
+          <ImageIcon className="h-8 w-8 text-slate-400 mb-3" />
+          <p className="text-xs text-slate-200 font-bold uppercase tracking-wide">{embedInfo.type} link detected</p>
+          <p className="text-[10px] text-slate-400 mt-1">Live embed may be blocked by host policy.</p>
+          <a href={previewUrl} target="_blank" rel="noreferrer" className="mt-3 text-[10px] text-primary underline break-all">
+            Open source link
+          </a>
+        </div>
+      );
+    }
     if (embedInfo?.embedUrl) {
       return <iframe key={previewUrl} src={embedInfo.embedUrl} className="w-full h-full border-0" allowFullScreen />;
     }

@@ -192,6 +192,19 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                      }
 
                      const embedInfo = getEmbedUrl(previewUrl);
+                     const blockedEmbedHosts = ["instagram", "tiktok", "facebook", "twitter"];
+                     if (embedInfo?.type && blockedEmbedHosts.includes(embedInfo.type)) {
+                       return (
+                         <div className="w-full h-full flex flex-col items-center justify-center text-center px-4">
+                           <ImageIcon className="h-8 w-8 text-slate-500 mb-3" />
+                           <p className="text-xs text-slate-200 font-bold uppercase tracking-wide">{embedInfo.type} link detected</p>
+                           <p className="text-[10px] text-slate-400 mt-1">Host may block embedded previews.</p>
+                           <a href={previewUrl} target="_blank" rel="noreferrer" className="mt-3 text-[10px] text-primary underline break-all">
+                             Open source link
+                           </a>
+                         </div>
+                       );
+                     }
                      
                      if (embedInfo?.embedUrl) {
                        return (
