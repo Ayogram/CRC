@@ -23,7 +23,7 @@ export const INITIAL_DORMS = [
     capacity: 12, 
     description: "Comfortable shared lodging designed for smaller groups, retreats, workers, and team stays.", 
     details: ["Sleeps up to 12 guests", "Spacious sleeping arrangement", "Secure and clean environment", "Ideal for church groups and retreats", "Well ventilated", "Convenient access to facilities"],
-    mediaUrls: ["/images/12beddom.MOV"] 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/v1777321591/crc_production_assets/12beddom.mp4"] 
   },
   { 
     id: "dorm-24", 
@@ -47,7 +47,7 @@ export const INITIAL_FACILITIES = [
       "Peavey PV215D powered enclosures", 
       "Deep bass, clear vocals, and high-volume sound coverage"
     ],
-    mediaUrls: ["/images/victory.mp4"], 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/v1777322161/crc_production_assets/victory.mp4"], 
     category: "Halls" 
   },
   { 
@@ -66,17 +66,17 @@ export const INITIAL_FACILITIES = [
       "Frost machine available for atmosphere", 
       "Two (2) 52-inch TVs for presentations & live viewing"
     ],
-    mediaUrls: ["/images/redemption.mp4"], 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/v1777322187/crc_production_assets/redemption.mp4"], 
     category: "Halls" 
   },
-  { id: "fac-playground", name: "Children Playground", description: "A safe, fun, and engaging outdoor space for children's activities.", details: ["Safe environment", "Interactive play sets", "Supervised area"], mediaUrls: ["/images/childrenplayground.MP4"], category: "Outdoor" },
-  { id: "fac-garden", name: "Garden", description: "Beautifully landscaped serene garden perfect for outdoor relaxation.", details: ["Serene atmosphere", "Beautiful landscaping", "Great for photography"], mediaUrls: ["/images/media__1776271813071.jpg"], category: "Outdoor" },
+  { id: "fac-playground", name: "Children Playground", description: "A safe, fun, and engaging outdoor space for children's activities.", details: ["Safe environment", "Interactive play sets", "Supervised area"], mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/v1777322223/crc_production_assets/childrenplayground.mp4"], category: "Outdoor" },
+  { id: "fac-garden", name: "Garden", description: "Beautifully landscaped serene garden perfect for outdoor relaxation.", details: ["Serene atmosphere", "Beautiful landscaping", "Great for photography"], mediaUrls: ["https://res.cloudinary.com/didymerkz/image/upload/v1777316922/crc_production_assets/media__1776271813071.jpg"], category: "Outdoor" },
   { 
     id: "fac-reception", 
     name: "Reception Area", 
     description: "A stylish and welcoming reception space designed to receive guests in comfort and elegance.", 
     details: ["Premium waiting lounge atmosphere", "Beautiful modern interior finish", "Great first impression", "Comfortable seating area", "Suitable for check-ins"],
-    mediaUrls: ["/images/receptionareas.mp4"], 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/v1777322249/crc_production_assets/receptionareas.mp4"], 
     category: "Indoor" 
   }
 ];
