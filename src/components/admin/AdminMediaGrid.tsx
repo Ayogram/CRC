@@ -188,7 +188,12 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                      if (!previewUrl) return <div className="text-slate-600 flex flex-col items-center"><Eye className="h-10 w-10 mb-3 opacity-20" /><span className="text-[10px] uppercase font-bold tracking-widest opacity-40">Source Required</span></div>;
                      
                      if (previewUrl.startsWith("blob:")) {
-                        return <video key={previewUrl} src={previewUrl} autoPlay loop muted className="w-full h-full object-contain" />;
+                        const fileInput = document.querySelector('input[name="mediaFile"]') as HTMLInputElement;
+                        const isVideo = fileInput?.files?.[0]?.type.startsWith("video/");
+                        if (isVideo) {
+                          return <video key={previewUrl} src={previewUrl} autoPlay loop muted className="w-full h-full object-contain" />;
+                        }
+                        return <img key={previewUrl} src={previewUrl} className="w-full h-full object-contain" alt="Preview" />;
                      }
 
                      const embedInfo = getEmbedUrl(previewUrl);

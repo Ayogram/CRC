@@ -51,7 +51,11 @@ export function AdminUploadMediaTrigger({ onCreated }: { onCreated?: (item: Medi
     }
 
     if (previewUrl.startsWith("blob:")) {
-      return <video key={previewUrl} src={previewUrl} controls className="w-full h-full object-contain" />;
+      const isVideo = previewUrl && (document.querySelector('input[name="mediaFile"]') as HTMLInputElement)?.files?.[0]?.type.startsWith("video/");
+      if (isVideo) {
+        return <video key={previewUrl} src={previewUrl} controls className="w-full h-full object-contain" />;
+      }
+      return <img key={previewUrl} src={previewUrl} className="w-full h-full object-contain" alt="Preview" />;
     }
 
     const embedInfo = getEmbedUrl(previewUrl);
