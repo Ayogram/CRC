@@ -3,10 +3,14 @@
 import { getPrisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getEmbedUrl } from "@/lib/media-utils";
+import { v2 as cloudinary } from "cloudinary";
 
 
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error && error.message) return error.message;
@@ -24,25 +28,31 @@ export async function upsertMedia(formData: FormData) {
   let url = (formData.get("url") as string) || "";
   const file = formData.get("mediaFile") as File;
 
-  // Process Native File System Uploads
+  // Process Cloudinary Uploads
   if (file && file.size > 0) {
     try {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       
-      const ext = path.extname(file.name) || (file.type.includes("video") ? ".mp4" : ".jpg");
-      const uniqueName = `media-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      await mkdir(uploadDir, { recursive: true });
-      const destPath = path.join(uploadDir, uniqueName);
-      await writeFile(destPath, buffer);
+      // Upload to Cloudinary using a Promise wrapper for the upload_stream
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: "auto", // Automatically detect if it's an image or video
+            folder: "crc_media_vault",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(buffer);
+      }) as any;
       
-      url = `/uploads/${uniqueName}`;
-      typeSelection = file.type.startsWith("video/") ? "video" : "image";
+      url = uploadResult.secure_url;
+      typeSelection = uploadResult.resource_type === "video" ? "video" : "image";
     } catch (e) {
-      console.error("[FILE_WRITE_ERROR]", e);
-      return { success: false, error: "System failed to securely commit your media attachment." };
+      console.error("[CLOUDINARY_UPLOAD_ERROR]", e);
+      return { success: false, error: "Cloudinary Sync Failed: Connection interrupted." };
     }
   }
 
