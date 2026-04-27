@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 
 const mediaAssets = [
-  { src: "https://res.cloudinary.com/didymerkz/video/upload/v1777316915/crc_production_assets/crcvid.mov", type: "video" },
-  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316922/crc_production_assets/crc1.jpg", type: "image" },
-  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316926/crc_production_assets/crc2.jpg", type: "image" },
-  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316929/crc_production_assets/crc3.jpg", type: "image" },
-  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316930/crc_production_assets/crc4.jpg", type: "image" },
+  { src: "https://res.cloudinary.com/didymerkz/video/upload/v1777316915/crc_production_assets/crcvid.mov?v=1.1", type: "video" },
+  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316922/crc_production_assets/crc1.jpg?v=1.1", type: "image" },
+  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316926/crc_production_assets/crc2.jpg?v=1.1", type: "image" },
+  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316929/crc_production_assets/crc3.jpg?v=1.1", type: "image" },
+  { src: "https://res.cloudinary.com/didymerkz/image/upload/v1777316930/crc_production_assets/crc4.jpg?v=1.1", type: "image" },
 ];
 
 export function HeroSlider() {

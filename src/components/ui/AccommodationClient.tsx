@@ -20,11 +20,11 @@ export function AccommodationClient({
   // This is a safety bridge for the migration
   const getRoomMedia = (roomName: string) => {
     const mapping: Record<string, string> = {
-      "Goshen Ultra": "https://res.cloudinary.com/didymerkz/video/upload/v1777317041/crc_production_assets/goshen_ultra.mp4",
-      "Bethel": "https://res.cloudinary.com/didymerkz/video/upload/v1777317599/crc_production_assets/Bethel.mov",
-      "Zion Signature": "https://res.cloudinary.com/didymerkz/video/upload/v1777318481/crc_production_assets/Zionssignature.mov",
-      "Beulah": "https://res.cloudinary.com/didymerkz/video/upload/v1777320915/crc_production_assets/Beulah.mov",
-      "Rehoboth": "https://res.cloudinary.com/didymerkz/video/upload/v1777321464/crc_production_assets/Rehoboth.mov"
+      "Goshen Ultra": "https://res.cloudinary.com/didymerkz/video/upload/v1777317041/crc_production_assets/goshen_ultra.mp4?v=1.1",
+      "Bethel": "https://res.cloudinary.com/didymerkz/video/upload/v1777317599/crc_production_assets/Bethel.mov?v=1.1",
+      "Zion Signature": "https://res.cloudinary.com/didymerkz/video/upload/v1777318481/crc_production_assets/Zionssignature.mov?v=1.1",
+      "Beulah": "https://res.cloudinary.com/didymerkz/video/upload/v1777320915/crc_production_assets/Beulah.mov?v=1.1",
+      "Rehoboth": "https://res.cloudinary.com/didymerkz/video/upload/v1777321464/crc_production_assets/Rehoboth.mov?v=1.1"
     };
     return mapping[roomName] || "/images/placeholder.jpg";
   };
