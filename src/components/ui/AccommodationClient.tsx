@@ -22,7 +22,7 @@ export function AccommodationClient({
     const mapping: Record<string, string> = {
       "Goshen Ultra": "https://res.cloudinary.com/didymerkz/video/upload/v1777317041/crc_production_assets/goshen_ultra.mp4",
       "Bethel": "https://res.cloudinary.com/didymerkz/video/upload/v1777317599/crc_production_assets/Bethel.mov",
-      "Zion Signature": "/images/Zionssignature.mov",
+      "Zion Signature": "https://res.cloudinary.com/didymerkz/video/upload/v1777318481/crc_production_assets/Zionssignature.mov",
       "Beulah": "/images/Beulah.MOV",
       "Rehoboth": "/images/Rehoboth .mov"
     };
