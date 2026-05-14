@@ -259,11 +259,14 @@ export function AccommodationClient({
                   <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                 </div>
                 <video 
-                  src={selectedLightboxVideo.replace('/upload/', '/upload/q_auto,f_auto/')} 
+                  src={selectedLightboxVideo.includes("playground") 
+                    ? selectedLightboxVideo.replace('/upload/', '/upload/q_auto,f_auto/') 
+                    : selectedLightboxVideo.replace('/upload/', '/upload/q_auto,f_auto,ac_none/')} 
                   poster={selectedLightboxVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                   autoPlay 
                   loop 
                   muted={!selectedLightboxVideo.includes("playground")}
+                  defaultMuted={!selectedLightboxVideo.includes("playground")}
                   controls
                   playsInline 
                   preload="auto"
@@ -271,6 +274,7 @@ export function AccommodationClient({
                   ref={(el) => {
                     if (el) {
                       el.muted = !selectedLightboxVideo.includes("playground");
+                      el.defaultMuted = !selectedLightboxVideo.includes("playground");
                     }
                   }}
                   onLoadedData={(e) => {

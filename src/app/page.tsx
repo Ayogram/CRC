@@ -239,17 +239,21 @@ export default function Home() {
                 <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
               </div>
               <video 
-                src={selectedVideo.replace('/upload/', '/upload/q_auto,f_auto/')} 
+                src={selectedVideo.replace('/upload/', '/upload/q_auto,f_auto,ac_none/')} 
                 poster={selectedVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                 autoPlay 
                 loop 
                 muted={true}
+                defaultMuted={true}
                 controls
                 playsInline 
                 preload="auto"
                 className="w-full h-full object-contain relative z-10"
                 ref={(el) => {
-                  if (el) el.muted = true;
+                  if (el) {
+                    el.muted = true;
+                    el.defaultMuted = true;
+                  }
                 }}
               />
             </div>
