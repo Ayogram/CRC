@@ -248,6 +248,9 @@ export default function Home() {
                 playsInline 
                 preload="auto"
                 className="w-full h-full object-contain relative z-10"
+                ref={(el) => {
+                  if (el) el.muted = true;
+                }}
               />
             </div>
           </div>

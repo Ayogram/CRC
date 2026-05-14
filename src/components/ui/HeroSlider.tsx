@@ -41,11 +41,12 @@ export function HeroSlider() {
                   src={media.src}
                   poster={media.poster}
                   autoPlay
-                  muted
+                  muted={true}
                   loop
                   playsInline
                   preload="auto"
                   className="absolute inset-0 w-full h-full object-cover"
+                  ref={(el) => { if (el) el.muted = true; }}
                 />
             ) : (
               <img 

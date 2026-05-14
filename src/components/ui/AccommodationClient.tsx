@@ -268,6 +268,11 @@ export function AccommodationClient({
                   playsInline 
                   preload="auto"
                   className="w-full h-full object-contain relative z-10"
+                  ref={(el) => {
+                    if (el) {
+                      el.muted = !selectedLightboxVideo.includes("playground");
+                    }
+                  }}
                   onLoadedData={(e) => {
                     const video = e.target as HTMLVideoElement;
                     video.style.opacity = "1";

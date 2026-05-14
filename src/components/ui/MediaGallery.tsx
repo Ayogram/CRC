@@ -165,9 +165,10 @@ export function MediaGallery({ initialMedia }: { initialMedia: any[] }) {
                       key={selectedMedia.url}
                       controls
                       autoPlay
-                      muted
+                      muted={true}
                       src={mediaUrl}
                       className="w-full h-full object-contain"
+                      ref={(el) => { if (el) el.muted = true; }}
                     />
                   );
                 }
