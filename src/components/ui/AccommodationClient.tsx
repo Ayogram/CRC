@@ -20,11 +20,11 @@ export function AccommodationClient({
   // This is a safety bridge for the migration
   const getRoomMedia = (roomName: string) => {
     const mapping: Record<string, string> = {
-      "Goshen Ultra": "https://res.cloudinary.com/didymerkz/video/upload/v1777317041/crc_production_assets/goshen_ultra.mp4?v=1.1",
-      "Bethel": "https://res.cloudinary.com/didymerkz/video/upload/v1777317599/crc_production_assets/Bethel.mov?v=1.1",
-      "Zion Signature": "https://res.cloudinary.com/didymerkz/video/upload/v1777318481/crc_production_assets/Zionssignature.mov?v=1.1",
-      "Beulah": "https://res.cloudinary.com/didymerkz/video/upload/v1777320915/crc_production_assets/Beulah.mov?v=1.1",
-      "Rehoboth": "https://res.cloudinary.com/didymerkz/video/upload/v1777321464/crc_production_assets/Rehoboth.mov?v=1.1"
+      "Goshen Ultra": "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777317041/crc_production_assets/goshen_ultra.mp4",
+      "Bethel": "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777317599/crc_production_assets/Bethel.mp4",
+      "Zion Signature": "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777318481/crc_production_assets/Zionssignature.mp4",
+      "Beulah": "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777320915/crc_production_assets/Beulah.mp4",
+      "Rehoboth": "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777321464/crc_production_assets/Rehoboth.mp4"
     };
     return mapping[roomName] || "/images/placeholder.jpg";
   };
@@ -49,7 +49,7 @@ export function AccommodationClient({
               <Card key={room.id || room.name} className="overflow-hidden flex flex-col group border-0 shadow-xl hover:shadow-2xl transition-shadow duration-300">
                 <div className="relative h-72 overflow-hidden">
                   {isVideo ? (
-                    <video key={mediaUrl} autoPlay loop muted playsInline src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <video key={mediaUrl} autoPlay loop muted playsInline preload="auto" src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   ) : (
                     <img src={mediaUrl} alt={room.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   )}
@@ -92,14 +92,17 @@ export function AccommodationClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {initialDormitories.map((dorm) => {
-            const mediaUrl = dorm.mediaUrls?.[0] || (dorm.name.includes("12") ? "/images/12beddom.MOV" : "/images/24beddom.MOV");
+            let mediaUrl = dorm.mediaUrls?.[0] || (dorm.name.includes("12") ? "/images/12beddom.MOV" : "/images/24beddom.MOV");
+            if (mediaUrl.includes('res.cloudinary.com')) {
+               mediaUrl = mediaUrl.replace('/upload/', '/upload/q_auto,f_auto/');
+            }
             const isVideo = mediaUrl.match(/\.(mp4|mov|webm)$/i);
 
             return (
               <div key={dorm.id || dorm.name} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 flex flex-col md:flex-row group hover:shadow-xl transition-shadow">
                 <div className="md:w-2/5 relative h-64 md:h-auto overflow-hidden">
                   {isVideo ? (
-                    <video key={mediaUrl} autoPlay loop muted playsInline src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <video key={mediaUrl} autoPlay loop muted playsInline preload="auto" src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   ) : (
                     <img src={mediaUrl} alt={dorm.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   )}
@@ -163,7 +166,7 @@ export function AccommodationClient({
                   onClick={() => isLightboxOpenable && isVideo ? setSelectedLightboxVideo(mediaUrl) : null}
                 >
                   {isVideo ? (
-                    <video key={mediaUrl} autoPlay loop muted playsInline src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <video key={mediaUrl} autoPlay loop muted playsInline preload="auto" src={mediaUrl.replace('/upload/', '/upload/q_auto,f_auto/')} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   ) : (
                     <img src={mediaUrl} alt={fac.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   )}
@@ -218,11 +221,12 @@ export function AccommodationClient({
           <div className="max-w-5xl w-full">
             <div className="relative aspect-video bg-black rounded-lg overflow-hidden shadow-2xl ring-1 ring-white/10">
                 <video 
-                  src={selectedLightboxVideo} 
+                  src={selectedLightboxVideo.replace('/upload/', '/upload/q_auto,f_auto/')} 
                   autoPlay 
                   loop 
                   controls
                   playsInline 
+                  preload="auto"
                   className="w-full h-full object-contain"
                 />
             </div>
