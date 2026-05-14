@@ -234,15 +234,20 @@ export default function Home() {
           </button>
           
           <div className="max-w-5xl w-full">
-            <div className="relative aspect-video bg-black rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+            <div className="relative aspect-video bg-black rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center justify-center z-0">
+                <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              </div>
               <video 
-                src={selectedVideo.replace('/upload/', '/upload/q_auto,f_auto/')} 
+                src={selectedVideo.replace('/upload/', '/upload/q_auto,f_auto,br_auto/')} 
+                poster={selectedVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                 autoPlay 
                 loop 
+                muted
                 controls
                 playsInline 
                 preload="auto"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain relative z-10"
               />
             </div>
           </div>

@@ -21,7 +21,7 @@ export function PageHero({ title, subtitle, bgMediaUrl }: PageHeroProps) {
             style={{ backgroundImage: `url(${bgMediaUrl.replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')})` }}
           >
             <video
-              src={bgMediaUrl}
+              src={bgMediaUrl.replace('/upload/', '/upload/q_auto,f_auto,br_auto/')}
               autoPlay
               muted
               loop

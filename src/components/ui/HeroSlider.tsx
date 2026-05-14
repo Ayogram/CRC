@@ -38,7 +38,7 @@ export function HeroSlider() {
           >
             {isVideo ? (
                <video 
-                 src={media.src}
+                 src={media.src.replace('/upload/', '/upload/q_auto,f_auto,br_auto/')}
                  poster={media.poster}
                  autoPlay
                  muted
