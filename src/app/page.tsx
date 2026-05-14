@@ -244,7 +244,6 @@ export default function Home() {
                 autoPlay 
                 loop 
                 muted={true}
-                defaultMuted={true}
                 controls
                 playsInline 
                 preload="auto"

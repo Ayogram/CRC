@@ -266,7 +266,6 @@ export function AccommodationClient({
                   autoPlay 
                   loop 
                   muted={!selectedLightboxVideo.includes("playground")}
-                  defaultMuted={!selectedLightboxVideo.includes("playground")}
                   controls
                   playsInline 
                   preload="auto"
