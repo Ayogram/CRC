@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { Edit, Trash2, Calendar, Tag, Check, X, AlertTriangle, UploadCloud, Video } from "lucide-react";
 import { deleteAnnouncement, setAnnouncementStatus, upsertAnnouncement } from "@/app/actions/announcements";
+import { getEmbedUrl } from "@/lib/media-utils";
 
 type AnnouncementItem = {
   id: string;
