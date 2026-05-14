@@ -2,10 +2,13 @@
 
 import { getPrisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { v2 as cloudinary } from "cloudinary";
 
-
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 function getErrorMessage(error: unknown, fallback: string) {
   if (error instanceof Error && error.message) return error.message;
@@ -13,7 +16,7 @@ function getErrorMessage(error: unknown, fallback: string) {
 }
 
 export async function upsertAnnouncement(formData: FormData) {
-   const prisma = getPrisma();
+  const prisma = getPrisma();
   const id = formData.get("id") as string;
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -24,24 +27,29 @@ export async function upsertAnnouncement(formData: FormData) {
   let featuredImg = formData.get("featuredImg") as string | null;
   const file = formData.get("featuredImgFile") as File;
 
-  // Process Native Node File Systems
+  // Process Cloudinary Uploads (Vercel Persistent Storage)
   if (file && file.size > 0) {
     try {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       
-      const ext = path.extname(file.name) || (file.type.includes("video") ? ".mp4" : ".jpg");
-      const uniqueName = `announce-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
-
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      await mkdir(uploadDir, { recursive: true });
-      const destPath = path.join(uploadDir, uniqueName);
-      await writeFile(destPath, buffer);
+      const uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          {
+            resource_type: "auto",
+            folder: "crc_announcements",
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(buffer);
+      }) as any;
       
-      featuredImg = `/uploads/${uniqueName}`;
+      featuredImg = uploadResult.secure_url;
     } catch (e) {
-      console.error("[FILE_WRITE_ERROR]", e);
-      return { success: false, error: "System failed to securely commit your file attachment." };
+      console.error("[CLOUDINARY_UPLOAD_ERROR]", e);
+      return { success: false, error: "Cloudinary Sync Failed: Connection interrupted." };
     }
   }
 

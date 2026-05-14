@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Image as ImageIcon, Bell, LogOut, Menu, X, Trash2 } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, Bell, LogOut, Menu, X, Trash2, Mail as MailIcon } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export function AdminNavigation({ userName }: { userName: string }) {
@@ -13,6 +13,7 @@ export function AdminNavigation({ userName }: { userName: string }) {
   const links = [
     { name: "Media Manager", href: "/admin/media", icon: ImageIcon },
     { name: "Announcements", href: "/admin/announcements", icon: Bell },
+    { name: "Messages", href: "/admin/messages", icon: MailIcon },
     { name: "Trash", href: "/admin/trash", icon: Trash2 },
   ];
 

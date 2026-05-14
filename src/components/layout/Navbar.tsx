@@ -32,7 +32,7 @@ export function Navbar() {
             </Link>
           </div>
           
-          <div className="hidden md:flex ml-10 mt-1 space-x-1">
+          <div className="hidden lg:flex ml-10 mt-1 space-x-1">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -54,7 +54,7 @@ export function Navbar() {
             </a>
           </div>
           
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-foreground hover:text-primary hover:bg-primary/10 transition-colors"
@@ -65,33 +65,40 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {isOpen && (
-        <div className="md:hidden border-t border-border bg-background shadow-xl absolute w-full left-0">
-          <div className="px-4 pt-2 pb-6 space-y-1 sm:px-3">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-3 rounded-md text-base font-medium transition-colors ${
-                  pathname === link.href ? "text-primary bg-primary/10 font-bold" : "text-foreground hover:bg-primary/5"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+      {/* Mobile menu - Animated and more premium */}
+      <div 
+        className={`lg:hidden absolute w-full bg-background border-b border-border shadow-2xl transition-all duration-300 ease-in-out origin-top overflow-hidden ${
+          isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="px-4 py-8 space-y-2">
+          {navLinks.map((link, i) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              onClick={() => setIsOpen(false)}
+              className={`block px-4 py-3 rounded-xl text-lg font-bold transition-all ${
+                pathname === link.href 
+                  ? "text-primary bg-primary/5 translate-x-2" 
+                  : "text-foreground hover:bg-slate-50"
+              }`}
+              style={{ transitionDelay: `${i * 50}ms` }}
+            >
+              {link.name}
+            </Link>
+          ))}
+          <div className="pt-4 px-2">
             <a
               href="https://wa.me/2349069168041"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 block w-full text-center px-6 py-3 rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-primary-dark transition-colors"
+              className="block w-full text-center px-6 py-4 rounded-xl shadow-lg text-lg font-black text-white bg-primary hover:bg-primary-dark transition-transform active:scale-95"
             >
-              Book Now
+              Book on WhatsApp
             </a>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

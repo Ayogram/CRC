@@ -5,10 +5,10 @@ import { PageHero } from "@/components/ui/PageHero";
 export default function AboutPage() {
   return (
     <div className="bg-background pb-24">
-      <PageHero 
+      <PageHero
         title="About CRC"
         subtitle="A peaceful destination for retreats, accommodation, meetings, celebrations, family relaxation, and memorable experiences."
-        bgMediaUrl="/images/PEACEFUL.jpg"
+        bgMediaUrl="https://res.cloudinary.com/didymerkz/image/upload/v1777316930/crc_production_assets/crc4.jpg"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
@@ -34,7 +34,7 @@ export default function AboutPage() {
                 <p className="text-gray-600">To create memorable experiences in a peaceful and excellent environment.</p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-l-4 border-l-primary shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-xl">
@@ -51,9 +51,9 @@ export default function AboutPage() {
         {/* CHAIRMAN'S MESSAGE */}
         <div className="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 flex flex-col md:flex-row">
           <div className="md:w-2/5 relative min-h-[400px]">
-            <img 
-              src="/images/about.jpg" 
-              alt="Pastor Ibrahim - Chairman" 
+            <img
+              src="/images/about.jpg"
+              alt="Pastor Ibrahim - Chairman"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:bg-gradient-to-r" />
@@ -67,7 +67,7 @@ export default function AboutPage() {
             <h3 className="text-2xl font-bold font-heading mb-4 text-foreground">Message from the Chairman</h3>
             <div className="prose prose-lg text-gray-600">
               <p>
-                Welcome to the Christian Retreat Centre. When we envisioned this facility, our primary goal was to create an oasis—a place where people can escape the noise of daily life and find true peace, comfort, and rejuvenation. 
+                Welcome to the Christian Retreat Centre. When we envisioned this facility, our primary goal was to create an oasis. A place where people can escape the noise of daily life and find true peace, comfort, and rejuvenation.
               </p>
               <p>
                 At CRC, excellence is our standard. Our dedicated team is committed to ensuring that every moment you spend with us is wonderful and inspiring. Whether you are here for a corporate event, a family getaway, or a spiritual retreat, know that this place was built for you.

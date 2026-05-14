@@ -34,12 +34,17 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
   async function handleDelete(id: string) {
     if (!confirm("Move this item to trash?")) return;
     setIsDeleting(id);
-    const result = await deleteMedia(id);
-    if (result?.success) {
-      setMediaItems(prev => prev.filter(m => m.id !== id));
-      router.refresh();
-    } else {
-      setFeedback(result?.error || "Failed to delete");
+    try {
+      const result = await deleteMedia(id);
+      if (result?.success) {
+        setMediaItems(prev => prev.filter(m => m.id !== id));
+        setFeedback("Item moved to trash.");
+        setTimeout(() => router.refresh(), 100);
+      } else {
+        setFeedback(result?.error || "Failed to delete");
+      }
+    } catch (e) {
+      setFeedback("Connection error while deleting.");
     }
     setIsDeleting(null);
   }
@@ -102,22 +107,32 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
        { mediaItems.map((item) => {
           const embedInfo = getEmbedUrl(item.url);
           const thumb = getThumbnailUrl(item.url, item.type);
-          const isExternal = ["youtube", "instagram", "tiktok", "facebook", "twitter"].includes(embedInfo?.type || "");
+          const isExternal = ["youtube", "instagram", "tiktok", "facebook", "twitter"].includes(embedInfo?.type || "") || 
+                            item.url.includes("tiktok.com") || item.url.includes("instagram.com") || item.url.includes("youtu.be");
 
           return (
             <div key={item.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative group hover:shadow-lg transition-all duration-300">
                 <div className="aspect-video bg-slate-900 relative overflow-hidden flex items-center justify-center">
-                  {item.type === 'video' && !thumb ? (
-                    <video src={item.url} className="w-full h-full object-cover" controls muted playsInline preload="metadata" />
+                  {item.type === 'video' || item.url.match(/\.(mp4|mov|webm)$/i) ? (
+                    <video src={item.url} className="w-full h-full object-cover" muted playsInline preload="metadata" autoPlay loop />
+                  ) : isExternal && embedInfo?.type === "youtube" ? (
+                    <img src={`https://img.youtube.com/vi/${embedInfo.id}/mqdefault.jpg`} className="w-full h-full object-cover" alt="" />
+                  ) : isExternal ? (
+                    <div className="flex flex-col items-center justify-center text-primary">
+                      <Video className="h-10 w-10 opacity-40 mb-2" />
+                      <span className="text-[10px] font-black uppercase tracking-widest">{embedInfo?.type} Content</span>
+                    </div>
                   ) : (
-                    <img src={thumb || "/images/placeholder.jpg"} className="w-full h-full object-cover" alt={item.title || "Media"} />
+                    <img src={thumb || "/images/placeholder.jpg"} className="w-full h-full object-cover" alt={item.title || "Media"} onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230f172a'/%3E%3Ctext x='50%25' y='50%25' fill='%23334155' font-family='Arial' font-size='10' text-anchor='middle' dominant-baseline='middle'%3EPreview%3C/text%3E%3C/svg%3E";
+                    }} />
                   )}
                   
                   {isExternal && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
-                       <div className="bg-white/20 backdrop-blur-md p-2 rounded-full border border-white/20">
-                          <ExternalLink className="h-4 w-4 text-white" />
-                       </div>
+                    <div className="absolute top-2 right-2 z-20">
+                       <span className="bg-primary text-white text-[7px] px-2 py-0.5 rounded-full uppercase font-black tracking-widest shadow-lg border border-white/20">
+                          {embedInfo?.type}
+                       </span>
                     </div>
                   )}
 
@@ -128,7 +143,6 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                 </div>
                 <div className="p-4 bg-white">
                   <h3 className="font-bold text-slate-800 text-xs mb-3 line-clamp-1">{item.title || "Untitled File"}</h3>
-                  <p className="text-[10px] text-slate-400 uppercase font-bold mb-2">Type: {item.type}</p>
                   <div className="flex justify-between items-center">
                     <span className={`text-[8px] px-2 py-0.5 font-black rounded-full uppercase tracking-widest ${item.isPublished ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}`}>
                       {item.isPublished ? "Live" : "Stored"}
@@ -174,13 +188,13 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
       </div>
 
       {editingItem && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-full max-h-[85vh] border border-white/20">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-xl animate-in fade-in duration-500">
+          <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row h-full max-h-[85vh] border border-white/20">
              
              {/* PREVIEW PANEL */}
-             <div className="md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-8 relative overflow-hidden group">
+             <div className="md:w-1/2 bg-slate-950 flex flex-col items-center justify-center p-8 relative overflow-hidden group border-r border-white/5">
                 <div className="absolute top-4 left-4 z-10">
-                   <span className="bg-white/10 backdrop-blur-md text-white/70 text-[10px] px-3 py-1 rounded-full uppercase tracking-widest font-bold border border-white/10">Live Vault Preview</span>
+                   <span className="bg-white/10 backdrop-blur-md text-white/70 text-[10px] px-3 py-1 rounded-full uppercase tracking-widest font-bold border border-white/10">Vault Live Sync</span>
                 </div>
                 
                 <div className="w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-2xl ring-1 ring-white/10 flex items-center justify-center group-hover:ring-primary/40 transition-all duration-500">
@@ -197,23 +211,17 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                      }
 
                      const embedInfo = getEmbedUrl(previewUrl);
-                     const blockedEmbedHosts = ["instagram", "tiktok", "facebook", "twitter"];
-                     if (embedInfo?.type && blockedEmbedHosts.includes(embedInfo.type)) {
-                       return (
-                         <div className="w-full h-full flex flex-col items-center justify-center text-center px-4">
-                           <ImageIcon className="h-8 w-8 text-slate-500 mb-3" />
-                           <p className="text-xs text-slate-200 font-bold uppercase tracking-wide">{embedInfo.type} link detected</p>
-                           <p className="text-[10px] text-slate-400 mt-1">Host may block embedded previews.</p>
-                           <a href={previewUrl} target="_blank" rel="noreferrer" className="mt-3 text-[10px] text-primary underline break-all">
-                             Open source link
-                           </a>
-                         </div>
-                       );
-                     }
                      
-                     if (embedInfo?.embedUrl) {
+                     if (embedInfo?.type && ["instagram", "tiktok", "facebook", "twitter", "youtube"].includes(embedInfo.type)) {
                        return (
-                         <iframe key={previewUrl} src={embedInfo.embedUrl} className="w-full h-full border-0" allowFullScreen />
+                         <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-slate-900">
+                           <Video className="h-10 w-10 text-primary mb-3" />
+                           <p className="text-sm text-white font-bold uppercase tracking-widest">{embedInfo.type} Link Detected</p>
+                           <p className="text-[10px] text-slate-400 mt-2 max-w-[200px]">Interactive card will be generated in the public stream.</p>
+                           <Button size="sm" variant="outline" className="mt-4 text-white border-white/20 hover:bg-white/10 text-[10px] h-7" asChild>
+                              <a href={previewUrl} target="_blank" rel="noreferrer">Watch Original</a>
+                           </Button>
+                         </div>
                        );
                      }
                      
@@ -221,8 +229,7 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                         return <video key={previewUrl} src={previewUrl} controls autoPlay loop muted className="w-full h-full object-contain" />;
                      }
 
-                     const thumb = getThumbnailUrl(previewUrl);
-                     return <img key={previewUrl} src={thumb || "/images/placeholder.jpg"} className="w-full h-full object-contain" alt="" />;
+                     return <img key={previewUrl} src={previewUrl} className="w-full h-full object-contain" alt="" />;
                    })()}
                 </div>
 
@@ -230,7 +237,7 @@ const [mediaItems, setMediaItems] = useState(initialMedia || []);
                   <div className="mt-8 flex flex-col items-center text-center animate-in slide-in-from-bottom-2 duration-500">
                      <p className="text-white font-bold text-lg line-clamp-1">{editingItem.title || "Untitled Content"}</p>
                      <div className="flex items-center mt-2 space-x-2">
-                        <span className="text-primary text-[8px] px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter font-black">Sync Ready</span>
+                        <span className="text-primary text-[8px] px-2 py-0.5 rounded-full border border-primary/30 uppercase tracking-tighter font-black">Pulse Ready</span>
                         <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">{editingItem.category}</p>
                      </div>
                   </div>

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
-import { Edit, Trash2, Calendar, Tag, Check, X, AlertTriangle, UploadCloud } from "lucide-react";
+import { Edit, Trash2, Calendar, Tag, Check, X, AlertTriangle, UploadCloud, Video } from "lucide-react";
 import { deleteAnnouncement, setAnnouncementStatus, upsertAnnouncement } from "@/app/actions/announcements";
 
 type AnnouncementItem = {
@@ -89,12 +89,17 @@ const [feedback, setFeedback] = useState("");
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this announcement?")) return;
     setIsDeleting(id);
-    const result = await deleteAnnouncement(id);
-    if (result?.success) {
-      setAnnouncements(prev => prev.filter(a => a.id !== id));
-      router.refresh();
-    } else {
-      setFeedback(result?.error || "Failed to delete");
+    try {
+      const result = await deleteAnnouncement(id);
+      if (result?.success) {
+        setAnnouncements(prev => prev.filter(a => a.id !== id));
+        setFeedback("Announcement deleted.");
+        setTimeout(() => router.refresh(), 100);
+      } else {
+        setFeedback(result?.error || "Failed to delete");
+      }
+    } catch (e) {
+      setFeedback("Connection error while deleting.");
     }
     setIsDeleting(null);
   }
@@ -131,9 +136,22 @@ const [feedback, setFeedback] = useState("");
               <tr key={item.id} className="hover:bg-slate-50 transition-colors group">
                 <td className="px-6 py-4">
                   <div className="flex items-center">
-                    <div className="h-12 w-12 rounded-xl overflow-hidden bg-slate-100 mr-4 border border-slate-100 shadow-sm transition-transform group-hover:scale-105">
+                    <div className="h-12 w-12 rounded-xl overflow-hidden bg-slate-900 mr-4 border border-slate-100 shadow-sm transition-transform group-hover:scale-105 flex items-center justify-center">
                       {item.featuredImg ? (
-                        <img src={item.featuredImg} className="h-full w-full object-cover" alt="" />
+                        item.featuredImg.match(/\.(mp4|mov|webm)$/i) ? (
+                          <video src={item.featuredImg} className="h-full w-full object-cover" />
+                        ) : item.featuredImg.includes("youtube.com") || item.featuredImg.includes("youtu.be") ? (
+                          <img src={`https://img.youtube.com/vi/${getEmbedUrl(item.featuredImg)?.id}/mqdefault.jpg`} className="h-full w-full object-cover" alt="" />
+                        ) : item.featuredImg.includes("tiktok.com") || item.featuredImg.includes("instagram.com") ? (
+                          <div className="flex flex-col items-center justify-center text-primary">
+                            <Video className="h-4 w-4" />
+                            <span className="text-[6px] font-black uppercase mt-0.5">{item.featuredImg.includes("tiktok") ? "TikTok" : "Insta"}</span>
+                          </div>
+                        ) : (
+                          <img src={item.featuredImg} className="h-full w-full object-cover" alt="" onError={(e) => {
+                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f1f5f9'/%3E%3Ctext x='50%25' y='50%25' fill='%23cbd5e1' font-family='Arial' font-size='10' text-anchor='middle' dominant-baseline='middle'%3EPreview%3C/text%3E%3C/svg%3E";
+                          }} />
+                        )
                       ) : (
                         <div className="h-full w-full flex items-center justify-center text-slate-300"><Calendar className="h-5 w-5" /></div>
                       )}

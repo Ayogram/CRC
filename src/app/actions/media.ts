@@ -22,7 +22,7 @@ export async function upsertMedia(formData: FormData) {
   const id = (formData.get("id") as string) || "";
   const title = (formData.get("title") as string) || "Untitled Content";
   const category = (formData.get("category") as string) || "Facilities";
-  const isPublished = formData.get("isPublished") === "true";
+  const isPublished = formData.has("isPublished") ? formData.get("isPublished") === "true" : true;
   
   let typeSelection = (formData.get("type") as string) || "image";
   let url = (formData.get("url") as string) || "";
@@ -85,25 +85,25 @@ export async function upsertMedia(formData: FormData) {
   try {
     let result;
     if (id && id !== "") {
+      console.log("UPDATING MEDIA ID:", id);
       result = await prisma.media.update({
         where: { id },
         data,
       });
-      console.log("MEDIA UPDATED:", result);
     } else {
+      console.log("CREATING NEW MEDIA IN DB...");
       result = await prisma.media.create({
         data,
       });
-      console.log("MEDIA SAVED:", result);
     }
     revalidatePath("/admin/media");
     revalidatePath("/media");
     revalidatePath("/accommodation");
-    console.log("MEDIA SAVED:", result);
+    console.log("MEDIA SAVED SUCCESSFULLY:", result.id);
     return { success: true, data: result };
   } catch (error: unknown) {
-    console.error("[UPSERT_MEDIA_ERROR]", error);
-    return { success: false, error: getErrorMessage(error, "Failed to save media") };
+    console.error("[UPSERT_MEDIA_DATABASE_ERROR]", error);
+    return { success: false, error: getErrorMessage(error, "Database Sync Failed") };
   }
 }
 

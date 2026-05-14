@@ -24,7 +24,7 @@ export default function ContactPage() {
     
     // Lazy import the server action since we added "use client"
     const { submitContactForm } = await import("@/app/actions/contact");
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.target as HTMLFormElement);
     
     const res = await submitContactForm(formData);
     if (res.success) {
@@ -192,7 +192,7 @@ export default function ContactPage() {
         </div>
 
         {/* MAP */}
-        <div className="mt-24 h-[400px] w-full rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+        <div className="mt-24 h-[400px] w-full rounded-2xl overflow-hidden shadow-lg border border-gray-200 relative group">
           <iframe 
             src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15852.138!2d3.4358!3d6.6433!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bea66870da157%3A0x6b44ab53fb89f2a4!2sChristian%20Retreat%20Centre%2C%20CRC!5e0!3m2!1sen!2sng!4v1715424560731!5m2!1sen!2sng" 
             width="100%" 
@@ -203,6 +203,13 @@ export default function ContactPage() {
             referrerPolicy="no-referrer-when-downgrade"
             title="CRC Location Map"
           ></iframe>
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none flex items-center justify-center">
+             <Button variant="secondary" className="opacity-0 group-hover:opacity-100 transition-opacity shadow-2xl pointer-events-auto" asChild>
+                <a href="https://maps.app.goo.gl/kSKswKRLLNz6Sbxs7" target="_blank" rel="noopener noreferrer">
+                  Open in Google Maps
+                </a>
+             </Button>
+          </div>
         </div>
 
       </div>

@@ -21,25 +21,39 @@ const FALLBACK_MEDIA = [
 
 export const dynamic = 'force-dynamic';
 
-export default async function MediaPage() {
-  let mediaItems: any[] = [];
-  
-  try {
-    mediaItems = await prisma.media.findMany({
-      where: {
-        isPublished: true,
-        isDeleted: false,
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    });
+  import { resolveSocialUrl } from "@/app/actions/resolve-url";
 
+  export default async function MediaPage() {
+    let mediaItems: any[] = [];
+    
+    try {
+      const rawMedia = await prisma.media.findMany({
+        where: {
+          isDeleted: false,
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
 
-  } catch (error) {
-    console.warn("[CRC-Recovery] Media fetch failed, using professional fallback:", error);
-    mediaItems = INITIAL_MEDIA;
-  }
+      // Resolve URLs for previews (Safely)
+      mediaItems = await Promise.all(rawMedia.map(async (m) => {
+        try {
+          if (m.url && (m.url.includes("tiktok.com") || m.url.includes("youtu.be"))) {
+            const resolved = await resolveSocialUrl(m.url);
+            if (resolved) {
+               return { ...m, resolvedMedia: resolved };
+            }
+          }
+        } catch (e) {
+          console.warn("Media URL Resolution failed for:", m.url, e);
+        }
+        return m;
+      }));
+    } catch (error) {
+      console.warn("[CRC-Recovery] Media fetch failed, using professional fallback:", error);
+      mediaItems = INITIAL_MEDIA;
+    }
 
   return (
     <div className="bg-background min-h-screen pb-24">

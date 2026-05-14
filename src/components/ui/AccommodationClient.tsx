@@ -29,6 +29,37 @@ export function AccommodationClient({
     return mapping[roomName] || "/images/placeholder.jpg";
   };
 
+  const VideoPreview = ({ url, alt, onClick, offset = "so_3" }: { url: string, alt: string, onClick?: () => void, offset?: string }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    // Better regex to handle query parameters
+    // Use the provided offset for an "attracting" preview frame
+    const placeholder = url.split('?')[0].replace('/upload/', `/upload/${offset}/`).replace(/\.(mp4|mov|webm|mov)$/i, '.jpg');
+
+    return (
+      <div 
+        className="relative w-full h-full cursor-pointer group/video overflow-hidden bg-slate-200"
+        onClick={onClick}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <img 
+          src={placeholder} 
+          alt={alt}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover/video:scale-110"
+        />
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300 group-hover/video:bg-black/40">
+          <div className="bg-white/90 backdrop-blur rounded-full p-4 shadow-2xl transform transition-all duration-300 group-hover/video:scale-110 group-hover/video:bg-primary group-hover/video:text-white">
+            <Maximize className="h-6 w-6" />
+          </div>
+        </div>
+        <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur px-3 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-widest flex items-center">
+          <span className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+          Video Preview
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       {/* ROOMS SECTION */}
@@ -44,32 +75,34 @@ export function AccommodationClient({
           {initialRooms.map((room) => {
             const mediaUrl = getRoomMedia(room.name);
             const isVideo = mediaUrl.match(/\.(mp4|mov|webm)$/i);
+            // Custom offsets for better previews on specific rooms
+            const customOffset = room.name.includes("Goshen") ? "so_22" : room.name.includes("Zion") ? "so_10" : "so_3";
             
             return (
-              <Card key={room.id || room.name} className="overflow-hidden flex flex-col group border-0 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-                <div className="relative h-72 overflow-hidden">
+              <Card key={room.id || room.name} className="overflow-hidden flex flex-col group border-0 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-[2rem]">
+                <div className="relative h-72 overflow-hidden bg-slate-100">
                   {isVideo ? (
-                    <video key={mediaUrl} autoPlay loop muted playsInline preload="auto" src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <VideoPreview url={mediaUrl} alt={room.name} onClick={() => setSelectedLightboxVideo(mediaUrl)} offset={customOffset} />
                   ) : (
                     <img src={mediaUrl} alt={room.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   )}
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-2xl text-primary-dark">{room.name}</CardTitle>
-                  <CardDescription className="text-base mt-2">{room.description}</CardDescription>
+                  <CardTitle className="text-2xl text-primary-dark font-bold tracking-tight">{room.name}</CardTitle>
+                  <CardDescription className="text-base mt-2 leading-relaxed">{room.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                  <h4 className="font-semibold text-sm uppercase tracking-wider text-gray-400 mb-3">Amenities</h4>
-                  <ul className="grid grid-cols-2 gap-2">
+                  <h4 className="font-black text-[10px] uppercase tracking-widest text-slate-300 mb-4 px-1">Room Amenities</h4>
+                  <ul className="grid grid-cols-2 gap-3">
                     {room.amenities.map((item: string, i: number) => (
-                      <li key={i} className="flex items-center text-sm text-gray-600">
+                      <li key={i} className="flex items-center text-sm text-slate-600 font-medium">
                         <Check className="h-4 w-4 text-primary mr-2 flex-shrink-0" /> {item}
                       </li>
                     ))}
                   </ul>
                 </CardContent>
-                <CardFooter className="pt-4 border-t border-gray-100 bg-gray-50/50">
-                  <Button className="w-full text-md h-12" asChild>
+                <CardFooter className="pt-6 border-t border-slate-50 bg-slate-50/30">
+                  <Button className="w-full h-12 rounded-xl bg-[#8DC63F] hover:bg-[#7db137] text-white font-bold shadow-md" asChild>
                     <a href={`https://wa.me/2349069168041?text=Hello,%20I%20would%20like%20to%20book%20the%20${encodeURIComponent(room.name)}%20at%20Christian%20Retreat%20Centre.%20Please%20share%20availability%20and%20price.`} target="_blank" rel="noopener noreferrer">
                       Book on WhatsApp
                     </a>
@@ -82,7 +115,7 @@ export function AccommodationClient({
       </section>
 
       {/* DORMITORIES SECTION */}
-      <section>
+      <section className="mt-24">
         <div className="mb-12">
           <h2 className="text-3xl font-bold font-heading text-foreground mb-3 flex items-center">
             <span className="bg-primary-dark w-2 h-8 mr-4 rounded-full inline-block"></span> Group Dormitories
@@ -99,27 +132,27 @@ export function AccommodationClient({
             const isVideo = mediaUrl.match(/\.(mp4|mov|webm)$/i);
 
             return (
-              <div key={dorm.id || dorm.name} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 flex flex-col md:flex-row group hover:shadow-xl transition-shadow">
-                <div className="md:w-2/5 relative h-64 md:h-auto overflow-hidden">
+              <div key={dorm.id || dorm.name} className="bg-white rounded-[2rem] overflow-hidden shadow-xl border border-slate-100 flex flex-col md:flex-row group hover:shadow-2xl transition-all duration-500">
+                <div className="md:w-2/5 relative h-64 md:h-auto overflow-hidden bg-slate-900">
                   {isVideo ? (
-                    <video key={mediaUrl} autoPlay loop muted playsInline preload="auto" src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <VideoPreview url={mediaUrl} alt={dorm.name} onClick={() => setSelectedLightboxVideo(mediaUrl)} />
                   ) : (
                     <img src={mediaUrl} alt={dorm.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   )}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center text-sm font-bold text-gray-700">
-                    <Users className="h-4 w-4 mr-2" /> {dorm.capacity} Beds
+                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full flex items-center text-[10px] font-black text-primary uppercase tracking-widest shadow-lg">
+                    <Users className="h-3 w-3 mr-2" /> {dorm.capacity} Beds
                   </div>
                 </div>
-                <div className="md:w-3/5 p-6 flex flex-col justify-between bg-slate-50/30">
+                <div className="md:w-3/5 p-8 flex flex-col justify-between bg-white">
                   <div>
-                    <h3 className="text-2xl font-bold font-heading text-foreground mb-3">{dorm.name}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-6 italic">{dorm.description}</p>
+                    <h3 className="text-2xl font-bold font-heading text-slate-900 mb-4">{dorm.name}</h3>
+                    <p className="text-slate-500 text-sm leading-relaxed mb-8">{dorm.description}</p>
                     
-                    <div className="space-y-3 mb-8">
-                      <h4 className="font-bold text-xs uppercase tracking-widest text-slate-400">Specifications</h4>
-                      <ul className="grid grid-cols-1 gap-2">
+                    <div className="space-y-4 mb-10">
+                      <h4 className="font-black text-[9px] uppercase tracking-[0.2em] text-slate-300">Specifications</h4>
+                      <ul className="grid grid-cols-1 gap-3">
                         {(dorm.details || []).map((item: string, i: number) => (
-                          <li key={i} className="flex items-start text-sm text-slate-700">
+                          <li key={i} className="flex items-start text-sm text-slate-600 font-medium">
                             <Check className="h-4 w-4 text-primary mr-2 mt-0.5 flex-shrink-0" /> {item}
                           </li>
                         ))}
@@ -127,14 +160,14 @@ export function AccommodationClient({
                     </div>
                   </div>
                   
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button className="flex-1 bg-primary-dark hover:bg-black" asChild>
+                  <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-slate-50">
+                    <Button className="flex-1 h-12 rounded-xl bg-[#8DC63F] hover:bg-[#7db137] text-white font-bold shadow-md" asChild>
                       <a href={`https://wa.me/2349069168041?text=Hello,%20I%20would%20like%20to%20book%20the%20${encodeURIComponent(dorm.name)}.%20Please%20share%20details.`} target="_blank" rel="noopener noreferrer">
-                        Book Now
+                        Book on WhatsApp
                       </a>
                     </Button>
-                    <Button variant="outline" className="flex-1" asChild>
-                       <a href={`https://wa.me/2349069168041?text=Inquiry%20about%20${encodeURIComponent(dorm.name)}`} target="_blank">WhatsApp Inquiry</a>
+                    <Button variant="outline" className="flex-1 h-12 rounded-xl border-slate-200 text-slate-500 font-bold hover:bg-slate-50" asChild>
+                       <a href={`https://wa.me/2349069168041?text=Inquiry%20about%20${encodeURIComponent(dorm.name)}`} target="_blank">Enquire Now</a>
                     </Button>
                   </div>
                 </div>
@@ -166,12 +199,14 @@ export function AccommodationClient({
                   onClick={() => isLightboxOpenable && isVideo ? setSelectedLightboxVideo(mediaUrl) : null}
                 >
                   {isVideo ? (
-                    <video key={mediaUrl} autoPlay loop muted playsInline preload="auto" src={mediaUrl.replace('/upload/', '/upload/q_auto,f_auto/')} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="w-full h-full">
+                      <VideoPreview url={mediaUrl} alt={fac.name} onClick={() => setSelectedLightboxVideo(mediaUrl)} />
+                    </div>
                   ) : (
                     <img src={mediaUrl} alt={fac.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-6 flex flex-col justify-end pointer-events-none">
-                    <h3 className="text-xl font-bold text-white mb-1 font-heading">{fac.name}</h3>
+                  <div className="absolute inset-0 bg-black/10 p-6 flex flex-col justify-end pointer-events-none">
+                    <h3 className="text-xl font-bold text-white mb-1 font-heading drop-shadow-lg">{fac.name}</h3>
                   </div>
                   {isLightboxOpenable && (
                      <div className="absolute top-4 right-4 bg-primary/90 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -180,7 +215,7 @@ export function AccommodationClient({
                   )}
                 </div>
                 <CardContent className="pt-4 flex-grow">
-                  <p className="text-sm text-gray-500 mb-4 line-clamp-2 italic">{fac.description}</p>
+                  <p className="text-sm text-gray-500 mb-4 line-clamp-2">{fac.description}</p>
                   <ul className="space-y-1.5 mb-2">
                     {(fac.details || []).slice(0, 4).map((detail: string, i: number) => (
                       <li key={i} className="flex items-center text-xs text-slate-600">
@@ -193,9 +228,9 @@ export function AccommodationClient({
                   </ul>
                 </CardContent>
                 <CardFooter className="pt-0 flex flex-col gap-2">
-                  <Button className="w-full" asChild>
+                  <Button className="w-full h-12 rounded-xl bg-[#8DC63F] hover:bg-[#7db137] text-white font-bold shadow-md" asChild>
                      <a href={`https://wa.me/2349069168041?text=Hello,%20I%20would%20like%20to%20reserve%20the%20${encodeURIComponent(fac.name)}.%20Kindly%20assist%20me.`} target="_blank" rel="noopener noreferrer">
-                      Book Hall
+                      Book on WhatsApp
                     </a>
                   </Button>
                   <Button variant="ghost" className="w-full text-xs h-8 text-slate-400 hover:text-primary" onClick={() => isLightboxOpenable && isVideo ? setSelectedLightboxVideo(mediaUrl) : null}>

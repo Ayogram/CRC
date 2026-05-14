@@ -50,26 +50,34 @@ export function MediaGallery({ initialMedia }: { initialMedia: any[] }) {
       {filteredMedia.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredMedia.map(media => {
-            const embedInfo = getEmbedUrl(media.url);
+            const embedInfo = media.resolvedMedia || getEmbedUrl(media.url);
             const thumb = getThumbnailUrl(media.url, media.type);
-            const isExternal = ["youtube", "instagram", "tiktok", "facebook"].includes(embedInfo?.type || "");
+            const isExternal = ["youtube", "instagram", "tiktok", "facebook", "twitter"].includes(embedInfo?.type || "");
+            const sourceLabel = isExternal ? embedInfo?.type : null;
+
+            const handleCardClick = () => {
+              setSelectedMedia(media);
+            };
 
             return (
               <div 
                 key={media.id || media.url || crypto.randomUUID()} 
-                className="group relative aspect-video flex-col bg-slate-100 rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100"
-                onClick={() => setSelectedMedia(media)}
+                className="group relative aspect-video flex-col bg-slate-900 rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-800"
+                onClick={handleCardClick}
               >
-                {media.type === "video" && !thumb ? (
-                  <video 
-                    key={media.url}
-                    autoPlay 
-                    loop 
-                    muted={!media.url.includes("childrenplayground")} 
-                    playsInline 
-                    src={media.url}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                  />
+                {media.type === "video" || (isExternal && embedInfo?.id) ? (
+                  <div className="relative w-full h-full">
+                    {embedInfo?.type === "tiktok" ? (
+                      <div className="w-full h-full scale-110 overflow-y-auto custom-scrollbar bg-black">
+                        <iframe src={`https://www.tiktok.com/embed/v2/${embedInfo.id}`} className="w-full min-h-[750px] border-0" scrolling="no" />
+                      </div>
+                    ) : embedInfo?.type === "youtube" ? (
+                      <iframe src={`https://www.youtube.com/embed/${embedInfo.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${embedInfo.id}`} className="w-full h-full border-0 pointer-events-none" scrolling="no" />
+                    ) : (
+                      <video src={media.url} autoPlay muted loop className="w-full h-full object-cover" />
+                    )}
+                    <div className="absolute inset-0 bg-black/20" />
+                  </div>
                 ) : (
                   <img 
                     src={thumb || "/images/placeholder.jpg"} 
@@ -79,13 +87,22 @@ export function MediaGallery({ initialMedia }: { initialMedia: any[] }) {
                   />
                 )}
                 
-                {/* DARK OVERLAY ON HOVER */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <div className="flex items-center text-primary-light mb-2">
-                    {media.type === "video" || isExternal ? <Video className="h-4 w-4 mr-2" /> : <ImageIcon className="h-4 w-4 mr-2" />}
-                    <span className="text-xs font-bold uppercase tracking-widest">{media.category || "General"}</span>
+                {/* SOURCE BADGE */}
+                {sourceLabel && (
+                  <div className="absolute top-4 left-4 z-20">
+                     <span className="bg-black/60 backdrop-blur-md text-white text-[8px] px-2 py-1 rounded-full uppercase font-black tracking-widest border border-white/10">
+                        {sourceLabel}
+                     </span>
                   </div>
-                  <h3 className="text-xl font-bold text-white font-heading leading-tight translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                )}
+
+                {/* LIGHT OVERLAY ON HOVER - REMOVED DARK GRADIENT AS PER REQUEST */}
+                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                  <div className="flex items-center text-white mb-2">
+                    {media.type === "video" || isExternal ? <Video className="h-4 w-4 mr-2" /> : <ImageIcon className="h-4 w-4 mr-2" />}
+                    <span className="text-[10px] font-black uppercase tracking-widest drop-shadow-md">{media.category || "General"}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-white font-heading leading-tight translate-y-2 group-hover:translate-y-0 transition-transform duration-300 drop-shadow-lg">
                     {media.title || "Untitled"}
                   </h3>
                 </div>
@@ -93,8 +110,8 @@ export function MediaGallery({ initialMedia }: { initialMedia: any[] }) {
                 {/* PLAY ICON OVERLAY FOR VIDEOS/EXTERNALS */}
                 {(media.type === "video" || isExternal) && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="bg-white/20 backdrop-blur-md text-white rounded-full p-5 transform scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100 transition-all duration-500 ring-1 ring-white/30">
-                      {isExternal ? <ExternalLink className="h-8 w-8" /> : <Play className="h-8 w-8 fill-current" />}
+                    <div className="bg-primary/90 backdrop-blur-md text-white rounded-full p-4 transform scale-75 group-hover:scale-100 opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-xl">
+                      {isExternal && embedInfo?.type !== 'youtube' ? <ExternalLink className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current" />}
                     </div>
                   </div>
                 )}
@@ -125,29 +142,47 @@ export function MediaGallery({ initialMedia }: { initialMedia: any[] }) {
           <div className="max-w-6xl w-full flex flex-col h-full justify-center">
             <div className="relative aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10 flex items-center justify-center">
               {(() => {
-                const embedInfo = getEmbedUrl(selectedMedia.url);
+                const embedInfo = selectedMedia.resolvedMedia || getEmbedUrl(selectedMedia.url);
                 
-                if (embedInfo?.type === "video") {
+                if (embedInfo?.type === "tiktok" && embedInfo.id) {
+                  return (
+                    <iframe 
+                      src={`https://www.tiktok.com/embed/v2/${embedInfo.id}`}
+                      className="w-full h-full border-0"
+                      allowFullScreen
+                      allow="autoplay; encrypted-media"
+                    />
+                  );
+                }
+
+                if (selectedMedia.type === "video" || selectedMedia.url.match(/\.(mp4|mov|webm)$/i)) {
                   return (
                     <video 
                       key={selectedMedia.url}
                       controls
-                      muted 
-                      playsInline 
-                      preload="metadata"
+                      autoPlay
                       src={selectedMedia.url}
                       className="w-full h-full object-contain"
                     />
                   );
                 }
 
-                if (embedInfo?.embedUrl) {
+                if (embedInfo?.type === "youtube" && embedInfo.id) {
                   return (
                     <iframe 
-                      src={embedInfo.embedUrl}
+                      src={`https://www.youtube.com/embed/${embedInfo.id}?autoplay=1`}
                       className="w-full h-full border-0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
+                    />
+                  );
+                }
+
+                if (embedInfo?.type === "instagram" && embedInfo.id) {
+                  return (
+                    <iframe 
+                      src={`https://www.instagram.com/p/${embedInfo.id}/embed`}
+                      className="w-full h-full border-0"
                     />
                   );
                 }
