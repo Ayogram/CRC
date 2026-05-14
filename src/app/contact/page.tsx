@@ -42,7 +42,7 @@ export default function ContactPage() {
       <PageHero 
         title="Contact Us"
         subtitle="We’re here to help you plan your stay, retreat, or event with ease."
-        bgMediaUrl="/images/crcvid.mov"
+        bgMediaUrl="https://res.cloudinary.com/didymerkz/video/upload/v1777316915/crc_production_assets/crcvid.mp4"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 pt-16">
