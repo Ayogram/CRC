@@ -243,7 +243,7 @@ export default function Home() {
                 poster={selectedVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                 autoPlay 
                 loop 
-                muted
+                muted={true}
                 controls
                 playsInline 
                 preload="auto"

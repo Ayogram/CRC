@@ -263,7 +263,7 @@ export function AccommodationClient({
                   poster={selectedLightboxVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                   autoPlay 
                   loop 
-                  muted
+                  muted={!selectedLightboxVideo.includes("playground")}
                   controls
                   playsInline 
                   preload="auto"
