@@ -157,7 +157,7 @@ export function MediaGallery({ initialMedia }: { initialMedia: any[] }) {
 
                 if (selectedMedia.type === "video" || selectedMedia.url.match(/\.(mp4|mov|webm)$/i)) {
                   const mediaUrl = selectedMedia.url.includes('res.cloudinary.com') 
-                    ? selectedMedia.url.replace('/upload/', '/upload/q_auto,f_auto,br_auto/') 
+                    ? selectedMedia.url.replace('/upload/', '/upload/q_auto,f_auto/') 
                     : selectedMedia.url;
                   
                   return (

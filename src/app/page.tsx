@@ -239,7 +239,7 @@ export default function Home() {
                 <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
               </div>
               <video 
-                src={selectedVideo.replace('/upload/', '/upload/q_auto,f_auto,br_auto/')} 
+                src={selectedVideo.replace('/upload/', '/upload/q_auto,f_auto/')} 
                 poster={selectedVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                 autoPlay 
                 loop 

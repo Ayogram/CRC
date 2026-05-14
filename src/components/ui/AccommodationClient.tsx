@@ -259,7 +259,7 @@ export function AccommodationClient({
                   <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                 </div>
                 <video 
-                  src={selectedLightboxVideo.replace('/upload/', '/upload/q_auto,f_auto,br_auto/')} 
+                  src={selectedLightboxVideo.replace('/upload/', '/upload/q_auto,f_auto/')} 
                   poster={selectedLightboxVideo.replace('/upload/', '/upload/so_3/').replace(/\.(mp4|mov|webm|mov)$/i, '.jpg')}
                   autoPlay 
                   loop 
@@ -271,7 +271,6 @@ export function AccommodationClient({
                   onLoadedData={(e) => {
                     const video = e.target as HTMLVideoElement;
                     video.style.opacity = "1";
-                    // Try to hide the spinner parent if needed, but relative z-index works
                   }}
                 />
             </div>
