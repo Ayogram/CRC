@@ -37,23 +37,21 @@ export function HeroSlider() {
             }`}
           >
             {isVideo ? (
-               <video 
-                 src={media.src.replace('/upload/', '/upload/q_auto,f_auto/')}
-                 poster={media.poster}
-                 autoPlay
-                 muted
-                 loop
-                 playsInline
-                 preload="auto"
-                 className="absolute inset-0 w-full h-full object-cover"
-                 style={{ opacity: isCurrent ? 1 : 0, transition: 'opacity 2s ease-in-out' }}
-               />
+                <video 
+                  src={media.src}
+                  poster={media.poster}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
             ) : (
               <img 
                 src={media.src} 
                 alt="CRC Gallery" 
                 className="absolute inset-0 w-full h-full object-cover"
-                style={{ opacity: isCurrent ? 1 : 0, transition: 'opacity 2s ease-in-out' }}
               />
             )}
             <div className="absolute inset-0 bg-black/10 z-20 pointer-events-none" />
