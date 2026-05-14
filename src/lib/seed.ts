@@ -31,7 +31,7 @@ export const INITIAL_DORMS = [
     capacity: 24, 
     description: "Large-capacity group accommodation perfect for camps, conferences, and large team lodging.", 
     details: ["Sleeps up to 24 guests", "Organized sleeping layout", "Great for large church groups", "Safe and comfortable environment", "Easy access to restrooms and venue facilities", "Budget-friendly group stay option"],
-    mediaUrls: ["/images/24beddom.MOV"] 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1778717799/crc_production_assets/24beddom.mp4"] 
   }
 ];
 

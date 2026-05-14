@@ -92,7 +92,7 @@ export function AccommodationClient({
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {initialDormitories.map((dorm) => {
-            let mediaUrl = dorm.mediaUrls?.[0] || (dorm.name.includes("12") ? "/images/12beddom.MOV" : "/images/24beddom.MOV");
+            let mediaUrl = dorm.mediaUrls?.[0] || (dorm.name.includes("12") ? "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777321591/crc_production_assets/12beddom.mp4" : "https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1778717799/crc_production_assets/24beddom.mp4");
             if (mediaUrl.includes('res.cloudinary.com')) {
                mediaUrl = mediaUrl.replace('/upload/', '/upload/q_auto,f_auto/');
             }
