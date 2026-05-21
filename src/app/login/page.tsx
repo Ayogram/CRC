@@ -20,14 +20,33 @@ export default function AdminLogin() {
     setError("");
 
     try {
+      const userAgent = navigator.userAgent;
       await signIn("credentials", {
         email,
         password,
+        userAgent,
         callbackUrl: "/admin/media",
       });
     } catch (err) {
       setMsg("");
       setError("Portal Connection Timeout");
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Please enter your email address first.");
+      return;
+    }
+    setMsg("Sending reset link...");
+    setError("");
+    const { requestPasswordReset } = await import("@/app/actions/auth");
+    const res = await requestPasswordReset(email);
+    if (res.success) {
+      setMsg("Password reset link sent to your email.");
+    } else {
+      setError(res.error || "Failed to send reset link.");
+      setMsg("");
     }
   };
 
@@ -74,7 +93,7 @@ export default function AdminLogin() {
             <div className="text-sm">
               <button 
                 type="button" 
-                onClick={() => setMsg("Please contact the Super Administrator (09069168041) to reset your secured credentials.")}
+                onClick={handleForgotPassword}
                 className="font-medium text-primary hover:text-primary-dark"
               >
                 Forgot your password?

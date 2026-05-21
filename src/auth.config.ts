@@ -10,7 +10,8 @@ export const authConfig = {
       name: "Admin Portal",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        userAgent: { label: "User Agent", type: "text" }
       },
       async authorize(credentials) {
         // We will override this in lib/auth.ts where we have DB access

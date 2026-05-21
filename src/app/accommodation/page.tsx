@@ -14,7 +14,6 @@ export default async function AccommodationPage() {
   let rooms: any[] = [];
   let dormitories: any[] = [];
   let facilities: any[] = [];
-
   try {
     const dbRooms = await prisma.room.findMany();
     const dbDorms = await prisma.dormitory.findMany();

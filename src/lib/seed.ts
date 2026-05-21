@@ -17,73 +17,68 @@ export const INITIAL_ROOMS = [
 ];
 
 export const INITIAL_DORMS = [
-  { 
-    id: "dorm-12", 
-    name: "12 Bed Dormitory", 
-    capacity: 12, 
-    description: "Comfortable shared lodging designed for smaller groups, retreats, workers, and team stays.", 
+  {
+    id: "dorm-12",
+    name: "12 Bed Dormitory",
+    capacity: 12,
+    description: "Comfortable shared lodging designed for smaller groups, retreats, workers, and team stays.",
     details: ["Sleeps up to 12 guests", "Spacious sleeping arrangement", "Secure and clean environment", "Ideal for church groups and retreats", "Well ventilated", "Convenient access to facilities"],
-    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777321591/crc_production_assets/12beddom.mp4"] 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777321591/crc_production_assets/12beddom.mp4"]
   },
-  { 
-    id: "dorm-24", 
-    name: "24 Bed Dormitory", 
-    capacity: 24, 
-    description: "Large-capacity group accommodation perfect for camps, conferences, and large team lodging.", 
+  {
+    id: "dorm-24",
+    name: "24 Bed Dormitory",
+    capacity: 24,
+    description: "Large-capacity group accommodation perfect for camps, conferences, and large team lodging.",
     details: ["Sleeps up to 24 guests", "Organized sleeping layout", "Great for large church groups", "Safe and comfortable environment", "Easy access to restrooms and venue facilities", "Budget-friendly group stay option"],
-    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1778717799/crc_production_assets/24beddom.mp4"] 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1778717799/crc_production_assets/24beddom.mp4"]
   }
 ];
 
 export const INITIAL_FACILITIES = [
-  { 
-    id: "fac-victory", 
-    name: "Victory Hall", 
-    description: "A grand hall suitable for major conferences, church services, and grand receptions.", 
+  {
+    id: "fac-victory",
+    name: "Victory Hall",
+    description: "A grand hall suitable for major conferences, church services, and grand receptions.",
     details: [
-      "Professional PA sound system", 
-      "Crown CX18 subwoofers", 
-      "Toppro KS215 3-way passive speakers", 
-      "Peavey PV215D powered enclosures", 
+      "Professional PA sound system",
+      "Crown CX18 subwoofers",
+      "Toppro KS215 3-way passive speakers",
+      "Peavey PV215D powered enclosures",
       "Deep bass, clear vocals, and high-volume sound coverage"
     ],
-    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322161/crc_production_assets/victory.mp4"], 
-    category: "Halls" 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322161/crc_production_assets/victory.mp4"],
+    category: "Halls"
   },
-  { 
-    id: "fac-redemption", 
-    name: "Redemption Hall", 
-    description: "A premium event venue designed for elegant celebrations, conferences, worship programs, and high-class gatherings.", 
+  {
+    id: "fac-redemption",
+    name: "Redemption Hall",
+    description: "A premium event venue designed for elegant celebrations, conferences, worship programs, and high-class gatherings.",
     details: [
-      "Crown CX18 18\" subwoofers (1,200W RMS / 2,400W peak)", 
-      "Toppro KS215 3-way speakers (3,000W program)", 
-      "Peavey PV215D powered enclosures (2,500W max)",
-      "Professional amplifiers and DJ-ready flight cases",
-      "Beam 230 moving head lights", 
-      "LED par can lights & aluminium truss lighting rig", 
-      "Large crystal chandelier & recessed ceiling downlights", 
-      "16 floor-standing AC units (1.5HP each)", 
-      "Frost machine available for atmosphere", 
-      "Two (2) 52-inch TVs for presentations & live viewing"
+      "16 floor standing A/C units for strong cooling",
+      "Professional stage lighting beam system",
+      "Frost machine for stage and dance floor atmosphere",
+      "Two 52-inch TVs for live viewing, presentations, and event display",
+      "Professional sound system suitable for all types of events"
     ],
-    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322187/crc_production_assets/redemption.mp4"], 
-    category: "Halls" 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322187/crc_production_assets/redemption.mp4"],
+    category: "Halls"
   },
   { id: "fac-playground", name: "Children Playground", description: "A safe, fun, and engaging outdoor space for children's activities.", details: ["Safe environment", "Interactive play sets", "Supervised area"], mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322223/crc_production_assets/childrenplayground.mp4"], category: "Outdoor" },
   { id: "fac-garden", name: "Garden", description: "Beautifully landscaped serene garden perfect for outdoor relaxation.", details: ["Serene atmosphere", "Beautiful landscaping", "Great for photography"], mediaUrls: ["https://res.cloudinary.com/didymerkz/image/upload/v1777316922/crc_production_assets/media__1776271813071.jpg"], category: "Outdoor" },
-  { 
-    id: "fac-reception", 
-    name: "Reception Area", 
-    description: "A stylish and welcoming reception space designed to receive guests in comfort and elegance.", 
+  {
+    id: "fac-reception",
+    name: "Reception Area",
+    description: "A stylish and welcoming reception space designed to receive guests in comfort and elegance.",
     details: ["Premium waiting lounge atmosphere", "Beautiful modern interior finish", "Great first impression", "Comfortable seating area", "Suitable for check-ins"],
-    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322249/crc_production_assets/receptionareas.mp4"], 
-    category: "Indoor" 
+    mediaUrls: ["https://res.cloudinary.com/didymerkz/video/upload/q_auto,f_auto/v1777322249/crc_production_assets/receptionareas.mp4"],
+    category: "Indoor"
   }
 ];
 
 export async function seedMedia() {
   console.log("Seeding site data...");
-  
+
   for (const item of INITIAL_MEDIA) {
     const exists = await prisma.media.findFirst({ where: { url: item.url } });
     if (!exists) {
@@ -122,8 +117,8 @@ export async function seedMedia() {
       const { id, ...data } = item;
       await prisma.facility.create({ data });
     } else {
-       const { id, ...data } = item;
-       await prisma.facility.update({ where: { id: exists.id }, data });
+      const { id, ...data } = item;
+      await prisma.facility.update({ where: { id: exists.id }, data });
     }
   }
 

@@ -26,23 +26,21 @@ export async function submitContactForm(formData: FormData) {
       }
     });
 
-    // 2. Simulate Email Delivery via console
-    // In production, implement Nodemailer/Resend passing process.env parameters
-    console.log(`
-      ===================================
-      [EMAIL SERVER SIMULATION]
-      To: christianretreatcentrelagos@gmail.com
-      From: CRC Website <noreply@crc.com>
-      Subject: New Contact Message from ${name}
-
-      Name: ${name}
-      Email: ${email}
-      Phone: ${phone || "N/A"}
-      
-      Message:
-      ${message}
-      ===================================
-    `);
+    // 2. Send Email Notification
+    const { sendEmail } = await import("@/lib/email");
+    await sendEmail({
+      to: "christianretreatcentrelagos@gmail.com",
+      subject: `New Contact Message from ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || "N/A"}\n\nMessage:\n${message}`,
+      html: `
+        <h3>New Contact Message</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || "N/A"}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
 
     revalidatePath("/admin/contact"); // In case admin has a contact viewer later
     return { success: true };
