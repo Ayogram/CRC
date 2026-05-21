@@ -75,7 +75,7 @@ export function Chatbot() {
 
       {/* CHAT WINDOW */}
       {isOpen && (
-        <div className="fixed bottom-6 left-6 z-[60] w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 fade-in duration-300 h-[500px] max-h-[80vh]">
+        <div className="fixed bottom-6 left-4 right-4 sm:right-auto sm:left-6 z-[60] w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 fade-in duration-300 h-[500px] max-h-[80vh]">
           
           {/* HEADER */}
           <div className="bg-primary text-white p-4 flex justify-between items-center shadow-md z-10">
@@ -102,7 +102,7 @@ export function Chatbot() {
                 className={`flex max-w-[85%] ${msg.sender === 'user' ? 'self-end justify-end' : 'self-start'}`}
               >
                 <div 
-                  className={`p-3 rounded-2xl text-sm leading-relaxed ${
+                  className={`p-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                     msg.sender === 'user' 
                       ? 'bg-primary text-white rounded-tr-sm' 
                       : 'bg-white border border-gray-200 text-gray-800 rounded-tl-sm shadow-sm'

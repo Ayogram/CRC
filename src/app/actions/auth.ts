@@ -2,6 +2,7 @@
 
 import { sendEmail } from "@/lib/email";
 import { getPrisma } from "@/lib/prisma";
+import crypto from "crypto";
 
 const prisma = getPrisma();
 
@@ -15,10 +16,15 @@ export async function requestPasswordReset(email: string) {
     return { success: false, error: "Invalid admin email." };
   }
 
-  // Create a mock reset token/link
-  // In a real app, generate a secure token, store it in DB with expiry, and verify it on the reset page.
-  const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  const resetLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/reset-password?token=${resetToken}&email=${email}`;
+  // Generate a secure, signed token that expires in 5 minutes
+  const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback_secret_for_crc_development_only_12345";
+  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes from now
+  const data = `${email}:${expiresAt}`;
+  const signature = crypto.createHmac("sha256", secret).update(data).digest("hex");
+  const resetToken = Buffer.from(`${data}:${signature}`).toString("base64");
+  
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://christianretreatcentre.com"; // Adjust if necessary
+  const resetLink = `${appUrl}/reset-password?token=${resetToken}`;
   
   try {
     await sendEmail({
@@ -38,5 +44,33 @@ export async function requestPasswordReset(email: string) {
   } catch (error) {
     console.error("Password reset error:", error);
     return { success: false, error: "Failed to send reset link." };
+  }
+}
+
+export async function verifyPasswordResetToken(token: string) {
+  try {
+    const decoded = Buffer.from(token, "base64").toString("utf-8");
+    const [email, expiresAtStr, signature] = decoded.split(":");
+    
+    if (!email || !expiresAtStr || !signature) {
+      return { valid: false, error: "Invalid token format." };
+    }
+
+    const expiresAt = parseInt(expiresAtStr, 10);
+    if (Date.now() > expiresAt) {
+      return { valid: false, error: "Token has expired. Please request a new password reset." };
+    }
+
+    const secret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET || "fallback_secret_for_crc_development_only_12345";
+    const data = `${email}:${expiresAt}`;
+    const expectedSignature = crypto.createHmac("sha256", secret).update(data).digest("hex");
+
+    if (signature !== expectedSignature) {
+      return { valid: false, error: "Invalid or tampered token." };
+    }
+
+    return { valid: true, email };
+  } catch (error) {
+    return { valid: false, error: "Invalid token." };
   }
 }

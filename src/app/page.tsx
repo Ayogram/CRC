@@ -67,7 +67,7 @@ export default function Home() {
   return (
     <>
       {/* HERO SECTION */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-black">
+      <section className="relative h-[70vh] md:h-[90vh] flex items-center justify-center overflow-hidden bg-black">
         <HeroSlider />
         
         <div className="relative z-10 text-center px-4 max-w-screen-xl mx-auto flex flex-col items-center">
