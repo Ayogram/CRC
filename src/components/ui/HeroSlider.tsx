@@ -41,12 +41,20 @@ export function HeroSlider() {
                   src={media.src}
                   poster={media.poster}
                   autoPlay
-                  muted={true}
+                  muted
                   loop
                   playsInline
                   preload="auto"
                   className="absolute inset-0 w-full h-full object-cover"
-                  ref={(el) => { if (el) el.muted = true; }}
+                  ref={(el) => { 
+                    if (el) {
+                      el.defaultMuted = true;
+                      el.muted = true;
+                      if (isCurrent) {
+                        el.play().catch(e => console.log("Video play blocked:", e));
+                      }
+                    }
+                  }}
                 />
             ) : (
               <img 
