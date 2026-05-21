@@ -24,8 +24,7 @@ export function HeroSlider() {
   }, []);
 
   return (
-    <div className="hero-slider relative w-full overflow-hidden bg-black">
-
+    <div className="absolute inset-0 z-0 overflow-hidden bg-black">
       {INITIAL_MEDIA.map((media, idx) => {
         const isCurrent = idx === currentIndex;
         const isVideo = media.type === "video";
@@ -38,31 +37,30 @@ export function HeroSlider() {
             }`}
           >
             {isVideo ? (
-              isCurrent && (
-                <video
+                <video 
                   src={media.src}
                   poster={media.poster}
-                  muted
                   autoPlay
+                  muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="auto"
                   className="absolute inset-0 w-full h-full object-cover"
-                  ref={(el) => {
+                  ref={(el) => { 
                     if (el) {
-                      el.muted = true;
                       el.defaultMuted = true;
-                      el.play().catch((e) => console.warn("Autoplay blocked:", e));
+                      el.muted = true;
+                      if (isCurrent) {
+                        el.play().catch(e => console.log("Video play blocked:", e));
+                      }
                     }
                   }}
                 />
-              )
             ) : (
-              <img
-                src={media.src}
-                alt="CRC Gallery"
+              <img 
+                src={media.src} 
+                alt="CRC Gallery" 
                 className="absolute inset-0 w-full h-full object-cover"
-                loading="lazy"
               />
             )}
             <div className="absolute inset-0 bg-black/10 z-20 pointer-events-none" />
