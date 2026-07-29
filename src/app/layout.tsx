@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth antialiased`} data-scroll-behavior="smooth">
-      <head>
+      <body className="min-h-screen flex flex-col font-sans tracking-tight text-foreground bg-background">
         <Script id="gtm-script" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -39,8 +39,6 @@ export default function RootLayout({
             })(window,document,'script','dataLayer','GTM-W4CQ8TC4');
           `}
         </Script>
-      </head>
-      <body className="min-h-screen flex flex-col font-sans tracking-tight text-foreground bg-background">
         <noscript>
           <iframe 
             src="https://www.googletagmanager.com/ns.html?id=GTM-W4CQ8TC4"
