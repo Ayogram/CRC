@@ -5,65 +5,22 @@ import { Button } from "@/components/ui/Button";
 import { Plus, X, Eye, Video, Image as ImageIcon, UploadCloud, Check } from "lucide-react";
 import { upsertMedia } from "@/app/actions/media";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { getEmbedUrl, getThumbnailUrl } from "@/lib/media-utils";
-import { resolveSocialUrl } from "@/app/actions/resolve-url";
 
-type MediaItem = {
-  id: string;
-  title?: string | null;
-  url: string;
-  type: string;
-  category?: string | null;
-  isPublished: boolean;
-};
-
-export function AdminUploadMediaTrigger({ onCreated }: { onCreated?: (item: MediaItem) => void }) {
+export function AdminUploadMediaTrigger({ onCreated }: { onCreated?: (item: any) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [resolvedEmbed, setResolvedEmbed] = useState<{ type: string, id: string } | null>(null);
-  const [isResolving, setIsResolving] = useState(false);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("Facilities");
-
-  useEffect(() => {
-    const handleResolve = async () => {
-      if (!previewUrl || previewUrl.startsWith("blob:")) {
-        setResolvedEmbed(null);
-        return;
-      }
-
-      // If it's already a full TikTok/Social link, extract ID immediately
-      const direct = getEmbedUrl(previewUrl);
-      if (direct?.id) {
-        setResolvedEmbed({ type: direct.type, id: direct.id });
-        return;
-      }
-
-      // Check if it's a short link or mobile link that needs resolving
-      if (previewUrl.includes("tiktok.com") || previewUrl.includes("bit.ly") || previewUrl.includes("t.co")) {
-        setIsResolving(true);
-        const result = await resolveSocialUrl(previewUrl);
-        if (result && result.id) {
-          setResolvedEmbed({ type: result.type || 'tiktok', id: result.id });
-        }
-        setIsResolving(false);
-      }
-    };
-
-    handleResolve();
-  }, [previewUrl]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const [previewBroken, setPreviewBroken] = useState(false);
   const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setPreviewUrl(URL.createObjectURL(file));
-      setPreviewBroken(false);
       if (!title) setTitle(file.name.split('.')[0]);
     }
   };
@@ -75,111 +32,6 @@ export function AdminUploadMediaTrigger({ onCreated }: { onCreated?: (item: Medi
     setIsSubmitting(false);
     setErrorMsg("");
     setSuccessMsg("");
-    setPreviewBroken(false);
-  };
-  const renderPreview = () => {
-    if (!previewUrl) {
-      return <div className="text-slate-600 flex flex-col items-center"><Eye className="h-10 w-10 mb-3 opacity-20 animate-pulse" /><span className="text-[10px] uppercase font-bold tracking-widest opacity-40">Awaiting source...</span></div>;
-    }
-
-    if (previewUrl.startsWith("blob:")) {
-      const isVideo = previewUrl && (document.querySelector('input[name="mediaFile"]') as HTMLInputElement)?.files?.[0]?.type.startsWith("video/");
-      if (isVideo) {
-        return <video key={previewUrl} src={previewUrl} controls className="w-full h-full object-contain" />;
-      }
-      return <img key={previewUrl} src={previewUrl} className="w-full h-full object-contain" alt="Preview" />;
-    }
-
-    if (isResolving) {
-       return <div className="text-primary flex flex-col items-center"><Plus className="h-10 w-10 mb-3 animate-spin" /><span className="text-[10px] uppercase font-black tracking-widest">Resolving Link...</span></div>;
-    }
-
-    if (resolvedEmbed) {
-      if (resolvedEmbed.type === "tiktok") {
-        return (
-          <div className="w-full h-full">
-            <iframe 
-              src={`https://www.tiktok.com/embed/v2/${resolvedEmbed.id}`}
-              className="w-full h-full border-0"
-              allowFullScreen
-              allow="autoplay; encrypted-media"
-            />
-          </div>
-        );
-      }
-      if (resolvedEmbed.type === "youtube") {
-        return (
-          <iframe 
-            src={`https://www.youtube.com/embed/${resolvedEmbed.id}?autoplay=1&mute=1&loop=1&playlist=${resolvedEmbed.id}`}
-            className="w-full h-full border-0"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-          />
-        );
-      }
-      if (resolvedEmbed.type === "instagram") {
-        return (
-          <iframe 
-            src={`https://www.instagram.com/p/${resolvedEmbed.id}/embed`}
-            className="w-full h-full border-0"
-
-          />
-        );
-      }
-    }
-
-    const embedInfo = getEmbedUrl(previewUrl);
-    
-    if (embedInfo?.type && ["instagram", "tiktok", "facebook", "twitter", "youtube"].includes(embedInfo.type)) {
-      const sourceLabel = embedInfo.type.charAt(0).toUpperCase() + embedInfo.type.slice(1);
-      
-      // Fallback for types not handled by resolvedEmbed yet (like Facebook)
-      if (embedInfo.type === "facebook") {
-        return (
-          <iframe 
-            src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(previewUrl)}&show_text=0&width=560`}
-            className="w-full h-full border-0"
-            allowFullScreen
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-          />
-        );
-      }
-
-      return (
-        <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-slate-900">
-          <div className="mb-4 relative">
-             <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full animate-pulse" />
-             <Video className="h-12 w-12 text-primary relative z-10" />
-          </div>
-          <p className="text-sm text-white font-bold uppercase tracking-widest">{sourceLabel} Content</p>
-          <p className="text-[10px] text-slate-400 mt-2 max-w-[200px]">Link detected successfully. Preview will display as an interactive card in the public gallery.</p>
-          
-          <div className="mt-6 flex flex-col gap-2 w-full max-w-[200px]">
-             <Button size="sm" variant="outline" className="text-white border-white/20 hover:bg-white/10 text-[10px] h-8" asChild>
-                <a href={previewUrl} target="_blank" rel="noreferrer">Watch Full Video</a>
-             </Button>
-          </div>
-        </div>
-      );
-    }
-
-    if (embedInfo?.type === "video" || previewUrl.match(/\.(mp4|mov|webm)$/i)) {
-      return <video key={previewUrl} src={previewUrl} autoPlay muted loop className="w-full h-full object-contain" />;
-    }
-
-    if (embedInfo?.type === "image" || previewUrl.match(/\.(jpg|jpeg|png|webp)$/i)) {
-      return (
-        <div className="relative w-full h-full">
-          {previewBroken ? (
-            <div className="text-slate-400 text-xs font-bold h-full w-full flex items-center justify-center">Preview unavailable</div>
-          ) : (
-            <img key={previewUrl} src={previewUrl} className="w-full h-full object-contain" alt="" onError={() => setPreviewBroken(true)} />
-          )}
-        </div>
-      );
-    }
-
-    return <div className="text-slate-400 text-xs font-bold flex flex-col items-center"><Eye className="h-8 w-8 mb-2 opacity-20" /><span>Preview unavailable</span></div>;
   };
 const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -203,9 +55,13 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log("SERVER RESULT:", result);
 
     if (result && result.success) {
-      setSuccessMsg("Saved to vault.");
-      if (result.data) onCreated?.(result.data);
-      router.refresh();
+      setSuccessMsg("Upload successful!");
+      
+      if (onCreated && result.data) {
+         onCreated(result.data);
+      }
+
+      await router.refresh();
 
       setTimeout(() => {
         cleanup();
@@ -214,16 +70,16 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       setErrorMsg(result?.error || "Failed to save media.");
       setIsSubmitting(false);
     }
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("UPLOAD ERROR:", error);
-    setErrorMsg(error instanceof Error ? error.message : "Unexpected error occurred.");
+    setErrorMsg(error?.message || "Unexpected error occurred.");
     setIsSubmitting(false);
   }
-};
+};  
 
   return (
     <>
-      <Button type="button" onClick={() => setIsOpen(true)} className="bg-primary hover:bg-primary-dark text-white shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+      <Button onClick={() => setIsOpen(true)} className="bg-primary hover:bg-primary-dark text-white shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
         <Plus className="mr-2 h-4 w-4" /> Pulse Upload
       </Button>
 
@@ -237,7 +93,33 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 </div>
                 
                 <div className="w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-2xl ring-1 ring-white/10 flex items-center justify-center group-hover:ring-primary/30 transition-all duration-500">
-                   {renderPreview()}
+                   {(() => {
+                     if (!previewUrl) return <div className="text-slate-600 flex flex-col items-center"><Eye className="h-10 w-10 mb-3 opacity-20 animate-pulse" /><span className="text-[10px] uppercase font-bold tracking-widest opacity-40">Awaiting source...</span></div>;
+                     
+                     if (previewUrl.startsWith("blob:")) {
+                        return <video key={previewUrl} src={previewUrl} autoPlay loop muted className="w-full h-full object-contain" />;
+                     }
+
+                     const embedInfo = getEmbedUrl(previewUrl);
+                     
+                     if (embedInfo?.embedUrl) {
+                       return (
+                         <iframe key={previewUrl} src={embedInfo.embedUrl} className="w-full h-full border-0" allowFullScreen />
+                       );
+                     }
+                     
+                     if (embedInfo?.type === 'video' || previewUrl.match(/\.(mp4|mov|webm)$/i)) {
+                        return <video key={previewUrl} src={previewUrl} autoPlay loop muted className="w-full h-full object-contain" controls />;
+                     }
+
+                     const thumb = getThumbnailUrl(previewUrl);
+                     return (
+                        <div className="relative w-full h-full">
+                          <img key={previewUrl} src={thumb || "/images/placeholder.jpg"} className="w-full h-full object-contain" alt="" />
+                          {embedInfo?.type === 'link' && <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[8px] px-2 py-1 rounded">External Link Host</div>}
+                        </div>
+                     );
+                   })()}
                 </div>
   
                 {previewUrl && (
@@ -258,7 +140,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                         <h3 className="text-2xl font-bold font-heading text-slate-900">Media Vault</h3>
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Cloud Sync Hub</p>
                      </div>
-                     <button type="button" onClick={() => setIsOpen(false)} className="h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                     <button onClick={() => setIsOpen(false)} className="h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all">
                         <X className="h-5 w-5" />
                      </button>
                   </div>
@@ -321,10 +203,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                             <input 
                               name="url" 
                               value={previewUrl.startsWith("blob:") ? "" : previewUrl}
-                              onChange={(e) => {
-                                setPreviewUrl(e.target.value);
-                                setPreviewBroken(false);
-                              }}
+                              onChange={(e) => setPreviewUrl(e.target.value)}
                               className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-medium placeholder:text-slate-300 pr-12 shadow-sm text-sm" 
                               placeholder="Or paste URL" 
                             />
@@ -332,12 +211,19 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                         </div>
                     </div>
 
+                    <div className="flex items-center space-x-3 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" name="isPublished" value="true" defaultChecked className="sr-only peer" />
+                          <div className="w-11 h-6 bg-slate-200 border-2 border-transparent rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                          <span className="ml-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">Public Visibility</span>
+                        </div>
+                    </div>
                   </form>
                 </div>
 
                 <div className="mt-8 flex flex-col space-y-3">
                    <Button type="submit" form="pulse-upload-form" disabled={isSubmitting} className="w-full h-14 text-lg rounded-2xl shadow-xl shadow-primary/20">
-                      {isSubmitting ? "Saving..." : "Save to Vault"}
+                      {isSubmitting ? "Syncing..." : "Confirm & Save to Vault"}
                    </Button>
                    <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} disabled={isSubmitting} className="w-full h-12 text-slate-400 font-bold uppercase tracking-widest text-[10px]">
                       Discard Changes

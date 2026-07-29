@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { Chatbot } from "@/components/ui/Chatbot";
+import Script from "next/script";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,7 +29,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} scroll-smooth antialiased`} data-scroll-behavior="smooth">
+      <head>
+        <Script id="gtm-script" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-W4CQ8TC4');
+          `}
+        </Script>
+      </head>
       <body className="min-h-screen flex flex-col font-sans tracking-tight text-foreground bg-background">
+        <noscript>
+          <iframe 
+            src="https://www.googletagmanager.com/ns.html?id=GTM-W4CQ8TC4"
+            height="0" 
+            width="0" 
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         <Navbar />
         <main className="flex-1">
           {children}
