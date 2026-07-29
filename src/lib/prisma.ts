@@ -1,31 +1,29 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-let cachedPrisma: PrismaClient | null = null;
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
-export function getPrisma(): PrismaClient {
-  if (!cachedPrisma) {
-    try {
-      const connectionString = process.env.DATABASE_URL;
-      const pool = new Pool({ connectionString });
-      const adapter = new PrismaPg(pool);
-      cachedPrisma = new PrismaClient({ adapter });
-    } catch (error) {
-      console.warn("[Safe-Mock] Prisma failed to initialize:", error);
-      const dbUnavailable = async () => {
-        throw new Error("Database unavailable. Check DATABASE_URL and ensure PostgreSQL is running.");
-      };
-      cachedPrisma = {
-        user: { findUnique: async () => null, findMany: async () => [], create: dbUnavailable, update: dbUnavailable, delete: dbUnavailable },
-        announcement: { findMany: async () => [], findUnique: async () => null, create: dbUnavailable, update: dbUnavailable, delete: dbUnavailable, count: async () => 0 },
-        media: { findMany: async () => [], findUnique: async () => null, findFirst: async () => null, create: dbUnavailable, update: dbUnavailable, delete: dbUnavailable, count: async () => 0 },
-        room: { findMany: async () => [], findUnique: async () => null, findFirst: async () => null, create: dbUnavailable, update: dbUnavailable, delete: dbUnavailable, count: async () => 0 },
-        dormitory: { findMany: async () => [], findUnique: async () => null, findFirst: async () => null, create: dbUnavailable, update: dbUnavailable, delete: dbUnavailable, count: async () => 0 },
-        facility: { findMany: async () => [], findUnique: async () => null, findFirst: async () => null, create: dbUnavailable, update: dbUnavailable, delete: dbUnavailable, count: async () => 0 },
-        contactMessage: { create: dbUnavailable, findMany: async () => [], delete: dbUnavailable },
-      } as unknown as PrismaClient;
-    }
-  }
-  return cachedPrisma;
+let prisma: PrismaClient;
+
+if (globalForPrisma.prisma) {
+  prisma = globalForPrisma.prisma;
+} else {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
+  
+  prisma = new PrismaClient({
+    adapter,
+    log: ["error", "warn"],
+  });
+}
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
+
+export function getPrisma() {
+  return prisma;
 }
