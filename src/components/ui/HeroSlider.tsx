@@ -24,7 +24,7 @@ export function HeroSlider() {
   }, []);
 
   return (
-    <div className="hero-slider relative w-full overflow-hidden bg-black">
+    <div className="absolute inset-0 z-0 overflow-hidden bg-black">
 
       {INITIAL_MEDIA.map((media, idx) => {
         const isCurrent = idx === currentIndex;
